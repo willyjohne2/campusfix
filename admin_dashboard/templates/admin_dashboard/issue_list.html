@@ -1,0 +1,116 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+<title>Issues Management | CampusFix Admin</title>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="admin-container">
+    <!-- Page Header -->
+    <section class="admin-header">
+        <div class="header-content">
+            <h1>Issues Management</h1>
+            <p class="header-subtitle">Total Issues: {{ total_count }}</p>
+        </div>
+        <div class="header-actions">
+            <a href="{% url 'admin_dashboard_overview' %}" class="btn-secondary">Back to Dashboard</a>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <form method="get" class="filter-form">
+            <div class="filter-group">
+                <input type="text" name="search" placeholder="Search issues..." value="{{ search_query }}" class="search-input">
+                
+                <select name="status" class="filter-select">
+                    <option value="">All Status</option>
+                    <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>Pending</option>
+                    <option value="In Progress" {% if status_filter == 'In Progress' %}selected{% endif %}>In Progress</option>
+                    <option value="Resolved" {% if status_filter == 'Resolved' %}selected{% endif %}>Resolved</option>
+                </select>
+
+                <select name="category" class="filter-select">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                    <option value="{{ category }}" {% if category_filter == category %}selected{% endif %}>{{ category }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="priority" class="filter-select">
+                    <option value="">All Priorities</option>
+                    {% for priority in priorities %}
+                    <option value="{{ priority }}" {% if priority_filter == priority %}selected{% endif %}>{{ priority }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="btn-primary">Filter</button>
+                <a href="{% url 'admin_issue_list' %}" class="btn-secondary">Clear</a>
+            </div>
+        </form>
+    </section>
+
+    <!-- Issues Table -->
+    <section class="issues-section">
+        {% if issues %}
+        <div class="issues-table-wrapper">
+            <table class="issues-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Reporter</th>
+                        <th>Date Reported</th>
+                        <th>Comments</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for issue in issues %}
+                    <tr class="issue-row">
+                        <td>#{{ issue.id }}</td>
+                        <td><strong>{{ issue.title }}</strong></td>
+                        <td><span class="badge category">{{ issue.category }}</span></td>
+                        <td><span class="badge priority-{{ issue.priority|lower }}">{{ issue.priority }}</span></td>
+                        <td><span class="badge status-{{ issue.status|lower|slugify }}">{{ issue.status }}</span></td>
+                        <td>{{ issue.reported_by.first_name|default:issue.reported_by.username }}</td>
+                        <td>{{ issue.created_at|date:"M d, Y" }}</td>
+                        <td><span class="comment-count">{{ issue.comments.count }}</span></td>
+                        <td><a href="{% url 'admin_issue_detail' issue.id %}" class="btn-link">View</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            {% if issues.has_previous %}
+                <a href="?page=1" class="pagination-btn">First</a>
+                <a href="?page={{ issues.previous_page_number }}" class="pagination-btn">Previous</a>
+            {% endif %}
+
+            <span class="pagination-info">Page {{ issues.number }} of {{ issues.paginator.num_pages }}</span>
+
+            {% if issues.has_next %}
+                <a href="?page={{ issues.next_page_number }}" class="pagination-btn">Next</a>
+                <a href="?page={{ issues.paginator.num_pages }}" class="pagination-btn">Last</a>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="no-data">
+            <p>No issues found matching your filters.</p>
+        </div>
+        {% endif %}
+    </section>
+
+</main>
+{% endblock %}

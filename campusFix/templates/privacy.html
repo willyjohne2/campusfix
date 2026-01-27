@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+<title>Privacy | CampusFix</title>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/about_privacy_help.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="info-page">
+    <h2>Privacy & Anonymity</h2>
+
+    <p>
+        CampusFix is built with anonymity by design.
+        Reporters are represented using system-generated identifiers rather than personal details.
+    </p>
+
+    <p>
+        Administrators cannot see the identity of reporters.
+        Only a designated super administrator can access identity mappings for security and audit purposes.
+    </p>
+
+    <p>
+        Report data is used strictly for issue resolution and system improvement.
+        No personal information is shared, sold, or publicly displayed.
+    </p>
+
+    <p class="note">
+        Your voice matters — and it remains protected.
+    </p>
+</section>
+{% endblock %}
+

@@ -1,0 +1,62 @@
+/* CampusFix admin custom styles: align with site theme */
+/* Primary colors taken from site header.css: dark bg #0f172a, accent #2563eb, links #93c5fd */
+
+/* Admin header / branding */
+.module caption, .branding, #header, #user-tools {
+    background-color: #0f172a !important;
+}
+#site-name a {
+    color: #e5e7eb !important;
+    text-decoration: none;
+    font-family: "Lobster", cursive;
+}
+
+/* Navbar links */
+.breadcrumbs a, #user-tools a, .app-list a {
+    color: #93c5fd !important;
+}
+
+/* Primary buttons */
+.button, input[type=submit], .grp-button, .submit-row .default {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: #fff !important;
+}
+
+/* Links and accent */
+a, .model-addlink {
+    color: #2563eb !important;
+}
+
+/* Table header accent */
+th {
+    background-color: #0b1220 !important;
+    color: #e5e7eb !important;
+}
+
+/* Highlight rows on hover */
+tr:hover td {
+    background-color: rgba(37,99,235,0.04) !important;
+}
+
+/* Improve readability of fieldsets */
+fieldset.module {
+    border-color: #1f2937 !important;
+}
+
+/* Reduce overly bright colors in admin */
+.success, .messagelist .success {
+    background-color: rgba(37,99,235,0.08) !important;
+    border-left-color: #2563eb !important;
+}
+
+/* Ensure the footer matches */
+#footer {
+    background: #0f172a !important;
+    color: #cbd5e1 !important;
+}
+
+/* Small responsive tweak */
+@media (max-width: 768px) {
+    #user-tools { padding-top: 8px; }
+}

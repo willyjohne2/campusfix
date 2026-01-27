@@ -1,0 +1,83 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+<title>Activity Log | CampusFix Admin</title>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="admin-container">
+    <!-- Page Header -->
+    <section class="admin-header">
+        <div class="header-content">
+            <h1>Activity Log</h1>
+            <p class="header-subtitle">View all admin actions for accountability</p>
+        </div>
+        <div class="header-actions">
+            <a href="{% url 'admin_dashboard_overview' %}" class="btn-secondary">Back to Dashboard</a>
+        </div>
+    </section>
+
+    <!-- Activity Log Section -->
+    <section class="activity-log-section">
+        {% if activities %}
+        <div class="activity-log-wrapper">
+            <table class="activity-table">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Admin</th>
+                        <th>Issue</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for activity in activities %}
+                    <tr class="activity-log-row">
+                        <td>
+                            <span class="log-time">{{ activity.timestamp|date:"M d, Y H:i" }}</span>
+                        </td>
+                        <td>
+                            <span class="log-admin">{{ activity.admin.first_name|default:activity.admin.username }}</span>
+                        </td>
+                        <td>
+                            <a href="{% url 'admin_issue_detail' activity.issue.id %}" class="log-issue-link">
+                                #{{ activity.issue.id }}: {{ activity.issue.title|truncatewords:5 }}
+                            </a>
+                        </td>
+                        <td>
+                            <span class="log-action">{{ activity.action }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            {% if activities.has_previous %}
+                <a href="?page=1" class="pagination-btn">First</a>
+                <a href="?page={{ activities.previous_page_number }}" class="pagination-btn">Previous</a>
+            {% endif %}
+
+            <span class="pagination-info">Page {{ activities.number }} of {{ activities.paginator.num_pages }}</span>
+
+            {% if activities.has_next %}
+                <a href="?page={{ activities.next_page_number }}" class="pagination-btn">Next</a>
+                <a href="?page={{ activities.paginator.num_pages }}" class="pagination-btn">Last</a>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="no-data">
+            <p>No activity logged yet.</p>
+        </div>
+        {% endif %}
+    </section>
+
+</main>
+{% endblock %}

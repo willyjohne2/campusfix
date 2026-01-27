@@ -1,0 +1,126 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+<title>User Dashboard | CampusFix</title>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="dashboard-container">
+
+    <!-- Dashboard Header -->
+    <section class="dashboard-header">
+        <div class="user-greeting">
+            <div class="profile-avatar-small">
+                <img src="{% static 'images/default.jpg' %}" alt="User Avatar" class="avatar-img-small">
+            </div>
+            <div class="greeting-content">
+                <p class="greeting-label">Welcome back</p>
+                <h1 class="user-name">{{ request.user.first_name|default:request.user.username }}</h1>
+                <p class="user-email">{{ request.user.email }}</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Stats -->
+    <section class="quick-stats">
+        <div class="stat-card">
+            <div class="stat-icon">📋</div>
+            <h3>Total Issues</h3>
+            <p class="stat-number">{{ total_issues|default:"0" }}</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">💬</div>
+            <h3>Comments</h3>
+            <p class="stat-number">{{ total_comments|default:"0" }}</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <h3>Resolved</h3>
+            <p class="stat-number">{{ resolved_issues|default:"0" }}</p>
+        </div>
+    </section>
+
+    <!-- Dashboard Navigation -->
+    <section class="dashboard-nav">
+        <h2>Quick Actions</h2>
+        <div class="nav-links">
+            <a href="{% url 'report_issue' %}" class="btn-primary">
+                <span>📝</span> Report New Issue
+            </a>
+            <a href="{% url 'my_issues' %}" class="btn-secondary">
+                <span>🔍</span> My Issues
+            </a>
+            <a href="{% url 'issue_list' %}" class="btn-secondary">
+                <span>📊</span> All Issues
+            </a>
+        </div>
+    </section>
+
+    <!-- Account Management -->
+    <section class="account-management">
+        <h2>Account Settings</h2>
+        <div class="settings-links">
+            <a href="{% url 'update_profile' %}" class="settings-card">
+                <div class="settings-icon">👤</div>
+                <h3>Update Profile</h3>
+                <p>Manage your personal information</p>
+            </a>
+            <a href="{% url 'change_password' %}" class="settings-card">
+                <div class="settings-icon">🔐</div>
+                <h3>Change Password</h3>
+                <p>Update your account security</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- Activity Feed -->
+    {% if recent_activity %}
+    <section class="activity-section">
+        <h2>Recent Activity</h2>
+        <div class="activity-feed">
+            <ul>
+                {% for activity in recent_activity %}
+                    <li class="activity-item">
+                        <span class="activity-icon">📌</span>
+                        <div class="activity-content">
+                            <span class="activity-status">{{ activity.status }}</span>
+                            <p>{{ activity.message }}</p>
+                        </div>
+                        <span class="activity-time">{{ activity.timestamp|date:"M d, Y" }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Notifications -->
+    {% if notifications %}
+    <section class="notifications-section">
+        <h2>Notifications</h2>
+        <div class="notifications">
+            <ul>
+                {% for note in notifications %}
+                    <li class="notification-item {{ note.type }}">
+                        <span class="notification-icon">{% if note.type == 'success' %}✅{% elif note.type == 'warning' %}⚠️{% elif note.type == 'error' %}❌{% else %}ℹ️{% endif %}</span>
+                        <div class="notification-content">
+                            <p>{{ note.message }}</p>
+                            <span class="notification-time">{{ note.timestamp|date:"M d, Y H:i" }}</span>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+    {% endif %}
+
+</main>
+{% endblock %}
+
+
+

@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+<title>Help | CampusFix</title>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/about_privacy_help.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="info-page">
+    <h2>Help & How It Works</h2>
+
+    <ul class="help-list">
+        <li>Register or log in to access reporting features.</li>
+        <li>Click <strong>Report Issue</strong> and provide accurate details.</li>
+        <li>Your identity remains hidden through system-generated identifiers.</li>
+        <li>Track the status of your report in real time.</li>
+        <li>Receive updates when the issue status changes.</li>
+    </ul>
+
+    <p>
+        After submitting a report, you can comment on <strong>your own report</strong>
+        to provide updates or additional details.
+        Administrators may also comment to request clarification or confirm resolution.
+    </p>
+
+    <p>
+        To prevent misuse, comments are restricted and not open to the public.
+    </p>
+
+    <p>
+        Only authorized administrators can manage reported issues.
+        If an issue requires urgent attention, submit it with clear and accurate information.
+    </p>
+</section>
+{% endblock %}
+

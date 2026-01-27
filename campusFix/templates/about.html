@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+<title>About | CampusFix</title>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/about_privacy_help.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="info-page">
+    <h2>About CampusFix</h2>
+
+    <p>
+        CampusFix is a web-based platform designed to help students and staff
+        report issues and challenges affecting campus life and nearby living spaces.
+    </p>
+
+    <p>
+        From broken facilities and connectivity issues to safety and living-condition concerns,
+        CampusFix ensures that every report is tracked, addressed, and resolved.
+    </p>
+
+    <p>
+        The system is built with anonymity at its core, allowing users to speak up
+        without fear while enabling administrators to take meaningful action.
+    </p>
+
+    <p class="note">
+        Developed as part of the KYU Innovation Summit.
+    </p>
+</section>
+{% endblock %}
+

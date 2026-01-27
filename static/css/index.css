@@ -1,0 +1,1146 @@
+body {
+    background-color: #f8fafc;
+    margin: 0;
+    font-family: Roboto, Arial, sans-serif;
+    color: #1f2933;
+    font-size: clamp(14px, 1.5vw, 16px);
+}
+
+/* INTRO */
+.intro {
+    background-color: #eef2ff;
+    padding: 2rem 1rem;
+    margin: 1rem;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.intro h1 {
+    color: #0f172a;
+    font-size: 2rem;
+}
+
+.intro p {
+    max-width: 700px;
+    margin: 1rem auto;
+    font-size: 1rem;
+}
+
+/* STATISTICS DASHBOARD */
+.statistics-dashboard {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    padding: 2rem 1rem;
+    margin: 2rem 1rem;
+    border-radius: 12px;
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2563eb;
+    margin: 0.5rem 0;
+}
+
+.stat-label {
+    color: #6b7280;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* SEARCH & FILTER SECTION */
+.search-filter-section {
+    background: white;
+    padding: 2rem 1rem;
+    margin: 2rem 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.search-container {
+    max-width: 1200px;
+    margin: 0 auto 1.5rem auto;
+}
+
+.search-form {
+    width: 100%;
+}
+
+.search-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.search-input {
+    flex: 1;
+    min-width: 250px;
+    padding: 0.8rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.2);
+}
+
+.search-btn {
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+/* Category Filters */
+.category-filters {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+    max-width: 1200px;
+    margin: 1.5rem auto;
+    padding: 0 1rem;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: #0f172a;
+    white-space: nowrap;
+}
+
+.category-btn {
+    display: inline-block;
+    padding: 0.6rem 1rem;
+    background: #f3f4f6;
+    color: #374151;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.category-btn:hover {
+    background: #e5e7eb;
+    color: #1f2937;
+}
+
+.category-btn.active {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    color: white;
+    border-color: #2563eb;
+}
+
+/* Active Filters Display */
+.active-filters {
+    max-width: 1200px;
+    margin: 1rem auto;
+    padding: 1rem;
+    background: #f0f9ff;
+    border-left: 4px solid #2563eb;
+    border-radius: 6px;
+}
+
+.active-filters p {
+    margin: 0;
+    color: #0c4a6e;
+    font-size: 0.95rem;
+}
+
+.active-filters strong {
+    color: #0f172a;
+}
+
+.clear-filters {
+    margin-left: 1rem;
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.clear-filters:hover {
+    text-decoration: underline;
+}
+
+/* BUTTONS */
+.btn-primary,
+.btn-secondary {
+    display: inline-block;
+    padding: 12px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #0f172a;
+    color: white;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+    transform: scale(1.05);
+}
+
+/* REPORTED ISSUES */
+.reported-issues {
+    margin: 2rem 1rem;
+}
+
+.issues-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    max-width: 1400px;
+    margin: 0 auto 2rem;
+    flex-wrap: wrap;
+}
+
+.reported-issues h2 {
+    color: #0f172a;
+    font-size: 1.8rem;
+    margin: 0;
+    flex: 1;
+}
+
+.btn-view-all {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.btn-view-all:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+}
+
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.issue-card {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    min-height: 460px;
+}
+
+.issue-card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+}
+
+
+.issue-card:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: translateY(-8px);
+    border-color: #2563eb;
+}
+
+.issue-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem 0.75rem 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.issue-image {
+    width: calc(100% - 1.5rem);
+    height: 120px;
+    margin: 0.75rem;
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+.issue-image:hover {
+    opacity: 0.85;
+    transform: scale(1.02);
+}
+
+.issue-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.issue-card:hover .issue-image img {
+    transform: scale(1.08);
+}
+
+.issue-content {
+    flex: 1;
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.issue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.issue-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+}
+
+.anonymous-poster {
+    font-size: 0.8rem;
+    color: #1f2937;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.issue-date {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.issue-title {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #111827;
+    line-height: 1.4;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: color 0.2s;
+    cursor: pointer;
+}
+
+.issue-title:hover {
+    color: #2563eb;
+}
+
+.issue-category {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #6366f1;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.issue-description {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    flex-shrink: 0;
+}
+
+.issue-header.image-overlay .status-badge {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    padding: 0.4rem 0.95rem;
+}
+
+.status-badge.status-resolved {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.status-inprogress {
+    background: #bfdbfe;
+    color: #1e3a8a;
+}
+
+.status-badge.status-pending {
+    background: #fed7aa;
+    color: #92400e;
+}
+
+.status-badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    background: #2563eb;
+    color: white;
+}
+
+.issue-actions {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.btn-view {
+    display: inline-block;
+    width: auto;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-view::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: left 0.3s ease;
+}
+
+.btn-view:hover::before {
+    left: 100%;
+}
+
+.btn-view:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.35);
+}
+
+/* --- END ISSUE CARD --- */
+
+/* Comments Section */
+.issue-comments-section {
+    padding: 0.75rem 0 0 0;
+    background: transparent;
+}
+
+.issue-comments-section.compact-comments {
+    border-top: 1px solid #f3f4f6;
+}
+
+.issue-comments-section h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.comments-list {
+    margin-bottom: 0.5rem;
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+.comments-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.comments-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.comments-list::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 2px;
+}
+
+.comment-item {
+    padding: 0.5rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    margin-bottom: 0.4rem;
+    border-left: 3px solid #2563eb;
+    padding-left: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.comment-item:hover {
+    background: #f3f4f6;
+}
+
+.comment-author {
+    font-size: 0.75rem;
+    margin-bottom: 0.15rem;
+}
+
+.comment-author strong {
+    color: #111827;
+    font-weight: 600;
+}
+
+.comment-text {
+    margin: 0.2rem 0;
+    font-size: 0.85rem;
+    color: #4b5563;
+    line-height: 1.3;
+}
+
+.comment-date {
+    font-size: 0.7rem;
+    color: #9ca3af;
+}
+
+.no-comments {
+    text-align: center;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 1rem 0.5rem;
+    font-size: 0.85rem;
+}
+
+.placeholder {
+    color: #6b7280;
+    font-style: italic;
+    text-align: center;
+    padding: 2rem;
+}
+
+/* Compact Comments */
+.compact-comments {
+  padding: 0.5rem 0;
+  background: transparent;
+  border-radius: 6px;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 0.4rem;
+}
+.compact-list {
+  max-height: 70px;
+  overflow-y: auto;
+  margin-bottom: 0.3rem;
+}
+.compact-comment {
+  padding: 0.2rem 0.4rem;
+  background: transparent;
+  border-radius: 4px;
+  margin-bottom: 0.2rem;
+  font-size: 0.75rem;
+  border-left: 2px solid #2563eb;
+  padding-left: 0.6rem;
+}
+.compact-comment .comment-author {
+  font-size: 0.7rem;
+  color: #2563eb;
+  margin-bottom: 0;
+  font-weight: 600;
+}
+.compact-comment .comment-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #4b5563;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Compact Comments */
+.compact-comments {
+  padding: 0.5rem 0;
+  background: transparent;
+  border-radius: 6px;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 0.4rem;
+}
+.compact-list {
+  max-height: 70px;
+  overflow-y: auto;
+  margin-bottom: 0.3rem;
+}
+.compact-comment {
+  padding: 0.2rem 0.4rem;
+  background: transparent;
+  border-radius: 4px;
+  margin-bottom: 0.2rem;
+  font-size: 0.75rem;
+  border-left: 2px solid #2563eb;
+  padding-left: 0.6rem;
+}
+.compact-comment .comment-author {
+  font-size: 0.7rem;
+  color: #2563eb;
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+/* Responsive for mobile */
+@media (max-width: 700px) {
+    .issues-grid {
+        padding: 0 0.5rem;
+        gap: 1rem;
+        margin: 1rem auto;
+    }
+
+    .issue-card{
+        flex: 0 0 100%;
+        min-height: auto;
+    }
+    .issue-image {
+        width: calc(100% - 1.5rem);
+        margin: 0.5rem 0.5rem 0.5rem 0.5rem;
+        min-width: 0;
+        height: 80px;
+        border-right: none;
+        border-bottom: 1.5px solid #e0e7ef;
+        border-radius: 6px;
+    }
+  .issue-content {
+    padding: 0.5rem;
+  }
+  .issue-title {
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+  }
+  .issue-description {
+    font-size: 0.8rem;
+    line-height: 1.3;
+    -webkit-line-clamp: 2;
+  }
+  .btn-view {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    width: auto;
+  }
+}
+
+
+
+
+/* CONCLUSION */
+.conclusion {
+    background-color: #eef2ff;
+    padding: 2rem 1rem;
+    margin: 1rem;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.conclusion .buttons {
+    margin-top: 1rem;
+}
+
+/* Add Comment Form */
+.add-comment-form-small {
+    padding: 0.4rem 0 0;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 0.3rem;
+}
+
+.comment-form-inline {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.comment-form-inline input {
+    flex: 1;
+    min-width: 120px;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.comment-form-inline input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 6px rgba(37, 99, 235, 0.12);
+}
+
+.btn-comment {
+    padding: 0.35rem 0.75rem;
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.btn-comment:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+/* ==========================
+   Responsive Design
+========================== */
+/* Tablet: 2 cards per row */
+@media (max-width: 1100px) {
+    .issue-card {
+        flex: 0 0 calc(50% - 2rem );
+    }
+}
+
+/* Mobile: 1 card per row */
+@media (max-width: 700px) {
+    .issue-card {
+     flex:  0 0 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .intro {
+        margin: 1rem 0.5rem;
+        padding: 1.5rem;
+    }
+
+    .intro h1 {
+        font-size: 1.5rem;
+    }
+
+    .reported-issues {
+        margin: 1.5rem 0;
+    }
+
+    .reported-issues h2 {
+        font-size: 1.4rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .issue-header {
+        padding: 1rem 1rem 0;
+    }
+
+    .issue-content {
+        padding: 1rem;
+    }
+
+    .issue-actions {
+        padding: 0 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .comment-form-inline {
+        flex-direction: column;
+    }
+
+    .comment-form-inline input {
+        width: 100%;
+    }
+
+    .btn-comment {
+        width: 100%;
+    }
+
+    .conclusion {
+        margin: 1rem 0.5rem;
+        padding: 1.5rem;
+    }
+
+    /* Tablet Search & Filter */
+    .statistics-dashboard {
+        padding: 1.5rem 1rem;
+    }
+
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .search-wrapper {
+        flex-direction: row;
+        gap: 0.75rem;
+    }
+
+    .search-input {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .category-filters {
+        flex-wrap: wrap;
+        margin-top: 0.75rem;
+    }
+
+    .category-btn {
+        flex: 0 1 auto;
+    }
+
+    .quick-stats {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .intro {
+        margin: 0.5rem;
+        padding: 1rem;
+    }
+
+    .intro h1 {
+        font-size: 1.2rem;
+    }
+
+    .intro p {
+        font-size: 0.9rem;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+
+   
+
+    .reported-issues {
+        margin: 1rem 0;
+    }
+
+    .reported-issues h2 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .issue-card {
+        border-radius: 8px;
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .issue-image {
+        width: 100%;
+        height: 80px;
+    }
+
+    .issue-title {
+        font-size: 0.85rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .issue-content {
+        padding: 0.6rem;
+    }
+
+    .issue-actions {
+        padding: 0;
+        margin-bottom: 0.3rem;
+    }
+
+    .btn-view {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+        width: auto;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .issue-comments-section {
+        padding: 1rem;
+    }
+
+    .issue-comments-section h4 {
+        font-size: 0.9rem;
+    }
+
+    .comments-list {
+        max-height: 250px;
+    }
+
+    .comment-item {
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .comment-text {
+        font-size: 0.85rem;
+    }
+
+    .comment-form-inline {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .comment-form-inline input {
+        font-size: 0.85rem;
+        padding: 0.5rem;
+    }
+
+    .btn-comment {
+        font-size: 0.85rem;
+        padding: 0.5rem;
+    }
+
+    .conclusion {
+        margin: 0.5rem;
+        padding: 1rem;
+    }
+
+    .quick-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .stat-card {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Image Modal */
+.issue-image {
+    cursor: pointer;
+}
+
+.issue-image:hover {
+    opacity: 0.9;
+}
+
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+#modalImage {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10000;
+}
+
+.modal-close:hover {
+    color: #ddd;
+    transform: scale(1.2);
+}
+
+/* Desktop Responsiveness - Increase fonts for better readability */
+@media (min-width: 1024px) {
+    html {
+        font-size: 18px;
+    }
+
+    body {
+        font-size: clamp(16px, 2vw, 18px);
+    }
+
+    .issue-title {
+        font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    }
+
+    .issue-description {
+        font-size: clamp(1rem, 1.8vw, 1.15rem);
+        line-height: 1.7;
+    }
+
+    .anonymous-poster {
+        font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+    }
+
+    .issue-date {
+        font-size: clamp(0.7rem, 1vw, 0.85rem);
+    }
+
+    .issue-category {
+        font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+    }
+
+    .compact-comment .comment-author {
+        font-size: clamp(0.7rem, 1vw, 0.85rem);
+    }
+
+    .compact-comment .comment-text {
+        font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+    }
+
+    .btn-view {
+        padding: 0.75rem 1.75rem;
+        font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+    }
+
+    /* Increase comment input size on desktop */
+    .comment-form-inline input {
+        padding: 0.75rem 1rem;
+        font-size: clamp(0.9rem, 1.4vw, 1rem);
+        min-height: 42px;
+    }
+
+    .btn-comment {
+        padding: 0.75rem 1.5rem;
+        font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+        min-height: 42px;
+    }
+
+    .add-comment-form-small {
+        padding: 1rem 0 0;
+    }
+
+    h1, h2, h3 {
+        font-size: clamp(1.5rem, 3vw, 2rem);
+    }
+
+    p {
+        font-size: clamp(1rem, 1.8vw, 1.1rem);
+    }
+}

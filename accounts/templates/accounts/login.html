@@ -1,0 +1,119 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}<title>Login | CampusFix</title>{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'accounts/css/forms.css' %}">
+<link rel="stylesheet" href="{% static 'css/register_form.css' %}">
+<style>
+  .password-wrapper {
+    position: relative;
+  }
+
+  .toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    height: 24px;
+    width: 24px;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .toggle-password:hover {
+    color: #1f2937;
+  }
+
+  .eye-icon {
+    width: 100%;
+    height: 100%;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  /* Slash overlay when password is visible */
+  .toggle-password.password-visible::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 110%;
+    background: currentColor;
+    transform: rotate(-45deg);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1 class="auth-title">Welcome Back</h1>
+      <p class="auth-subtitle">Log in to your CampusFix account</p>
+    </div>
+
+    {% if messages %}
+      <div>
+        {% for message in messages %}
+          {% if message.tags == 'error' %}
+            <div class="error-alert">{{ message }}</div>
+          {% else %}
+            <div class="success-message">{{ message }}</div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="POST" class="auth-form" id="loginForm">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        <label for="id_email" class="form-label">
+          <span>Email Address</span>
+        </label>
+        <input type="email" name="email" id="id_email" class="form-control" placeholder="Enter your email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="id_password" class="form-label">
+          <span>Password</span>
+        </label>
+        <div class="password-wrapper">
+          <input type="password" name="password" id="id_password" class="form-control" placeholder="Enter your password" required>
+          <button type="button" class="toggle-password" onclick="togglePasswordVisibility('id_password')" title="Show password">
+            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-checkbox">
+        <input type="checkbox" name="remember_me" id="id_remember_me" value="on">
+        <label for="id_remember_me">Remember me for 30 days</label>
+      </div>
+
+      <button type="submit" class="btn-submit">Login</button>
+    </form>
+
+    <div class="auth-footer">
+      <p class="footer-text">Don't have an account? 
+        <a href="{% url 'register' %}" class="footer-link">Create one here</a>
+      </p>
+      <p class="footer-text" style="margin-top: 0.5rem;">
+        <a href="{% url 'password_reset' %}" class="footer-link">Forgot your password?</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/auth.js' %}"></script>
+{% endblock %}

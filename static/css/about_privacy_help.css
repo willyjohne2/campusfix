@@ -1,0 +1,45 @@
+.info-page {
+    max-width: 720px;        
+    margin: 4rem auto 2rem;  
+    padding: 2rem 1.5rem;    
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.info-page h2 {
+    color: #2563eb;
+    margin-bottom: 1.2rem;
+    text-align: center;
+}
+
+.info-page p {
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    color: #1f2937;
+}
+
+.help-list {
+    margin: 1.5rem 0;
+    padding-left: 1.2rem;
+}
+
+.help-list li {
+    margin-bottom: 0.7rem;
+}
+
+.note {
+    margin-top: 2rem;
+    font-style: italic;
+    color: #475569;
+    text-align: center;
+}
+
+/* Mobile tweaks */
+@media (max-width: 600px) {
+       .info-page {
+        margin: 2rem 1rem; 
+        padding: 1rem;      
+    }
+}
+

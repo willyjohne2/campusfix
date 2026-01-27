@@ -1,0 +1,95 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+<title>Permission Audits | CampusFix Super Admin</title>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="admin-container">
+    <!-- Page Header -->
+    <section class="admin-header" style="background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);">
+        <div class="header-content">
+            <h1>🔑 Permission Audits</h1>
+            <p class="header-subtitle">Track all admin permission changes</p>
+        </div>
+        <div class="header-actions">
+            <a href="{% url 'super_admin_overview' %}" class="btn-secondary">Back to Dashboard</a>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <form method="get" class="filter-form">
+            <div class="filter-group">
+                <input type="text" name="search" placeholder="Search by username..." value="{{ search_query }}" class="search-input">
+                
+                <select name="action" class="filter-select">
+                    <option value="">All Actions</option>
+                    <option value="added" {% if filter_action == 'added' %}selected{% endif %}>Added to group</option>
+                    <option value="removed" {% if filter_action == 'removed' %}selected{% endif %}>Removed from group</option>
+                    <option value="staff_granted" {% if filter_action == 'staff_granted' %}selected{% endif %}>Staff granted</option>
+                    <option value="staff_revoked" {% if filter_action == 'staff_revoked' %}selected{% endif %}>Staff revoked</option>
+                </select>
+
+                <button type="submit" class="btn-primary">Filter</button>
+                <a href="{% url 'super_admin_permission_audits' %}" class="btn-secondary">Clear</a>
+            </div>
+        </form>
+    </section>
+
+    <!-- Audits Table -->
+    <section class="issues-section">
+        {% if audits %}
+        <div class="issues-table-wrapper">
+            <table class="issues-table">
+                <thead>
+                    <tr>
+                        <th>Super Admin</th>
+                        <th>Target User</th>
+                        <th>Action</th>
+                        <th>Reason</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for audit in audits %}
+                    <tr>
+                        <td><strong>{{ audit.super_admin.username }}</strong></td>
+                        <td><strong>{{ audit.target_user.username }}</strong></td>
+                        <td><span class="badge category">{{ audit.get_action_display }}</span></td>
+                        <td>{{ audit.reason|truncatewords:10|default:"N/A" }}</td>
+                        <td>{{ audit.timestamp|date:"M d, Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            {% if audits.has_previous %}
+                <a href="?page=1" class="pagination-btn">First</a>
+                <a href="?page={{ audits.previous_page_number }}" class="pagination-btn">Previous</a>
+            {% endif %}
+
+            <span class="pagination-info">Page {{ audits.number }} of {{ audits.paginator.num_pages }}</span>
+
+            {% if audits.has_next %}
+                <a href="?page={{ audits.next_page_number }}" class="pagination-btn">Next</a>
+                <a href="?page={{ audits.paginator.num_pages }}" class="pagination-btn">Last</a>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="no-data">
+            <p>No permission changes recorded.</p>
+        </div>
+        {% endif %}
+    </section>
+
+</main>
+{% endblock %}

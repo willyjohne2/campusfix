@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% block title %}
+    <title>CampusFix</title>
+    {% endblock %}
+
+   
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="preload" href="{% static 'css/header.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{% static 'css/header.css' %}"></noscript>
+    {% block css %}{% endblock %}
+</head>
+<body>
+
+<div class="page-wrapper">
+
+<header class="site-header">
+    <h1 class="logo">CampusFix</h1>
+
+    <button class="hamburger" id="hamburger-btn" aria-label="Toggle navigation">
+        ☰
+    </button>
+
+    <div id="mobile-menu-overlay" class="overlay">
+        <nav id="nav-menu-mobile">
+            <button class="close-btn" id="close-menu-btn" aria-label="Close menu">✕</button>
+            <ul>
+                <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'report_issue' %}" class="nav-link">Report Issue</a></li>
+                    {% if user.is_staff %}
+                        <li><a href="{% url 'admin_dashboard_overview' %}" class="nav-link">👨‍💼 Admin Dashboard</a></li>
+                    {% else %}
+                        <li><a href="{% url 'dashboard_home' %}" class="nav-link">Dashboard</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'logout' %}" class="nav-link">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'register' %}" class="nav-link">Register</a></li>
+                    <li><a href="{% url 'login' %}" class="nav-link">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+    <nav id="nav-menu">
+        <ul>
+            <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'report_issue' %}" class="nav-link">Report Issue</a></li>
+                {% if user.is_staff %}
+                    <li><a href="{% url 'admin_dashboard_overview' %}" class="nav-link">👨‍💼 Admin Dashboard</a></li>
+                {% else %}
+                    <li><a href="{% url 'dashboard_home' %}" class="nav-link">Dashboard</a></li>
+                {% endif %}
+                <li><a href="{% url 'logout' %}" class="nav-link">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'register' %}" class="nav-link">Register</a></li>
+                <li><a href="{% url 'login' %}" class="nav-link">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
+
+<main class="page-content">
+    {% block content %}{% endblock %}
+</main>
+
+<section class="cta-section">
+    {% if user.is_authenticated %}
+       
+        <h3>Have an issue to report?</h3>
+        <p>
+            Help improve campus life by reporting issues anonymously. Your feedback makes a difference.
+        </p>
+        <div class="cta-buttons">
+            <a href="{% url 'report_issue' %}" class="btn-primary">📝 Report New Issue</a>
+            <a href="{% url 'dashboard_home' %}" class="btn-secondary">📊 View My Issues</a>
+        </div>
+    {% else %}
+        <h3>See something that needs fixing?</h3>
+        <p>
+            Report issues anonymously and help improve campus life for everyone.
+        </p>
+        <div class="cta-buttons">
+            <a href="{% url 'login' %}" class="btn-primary">Login to Report</a>
+            <a href="{% url 'register' %}" class="btn-secondary">Create Account</a>
+        </div>
+    {% endif %}
+</section>
+
+<footer class="site-footer">
+    <div class="footer-content">
+        <p class="footer-mission">
+            CampusFix — improving campus life through anonymous issue reporting.
+        </p>
+
+        <ul class="footer-links">
+            <li><a href="{% url 'about' %}">About</a></li>
+            <li><a href="{% url 'help' %}">Help</a></li>
+            <li><a href="{% url 'privacy' %}">Privacy</a></li>
+        </ul>
+        <div class="footer-contact-section">
+            <div class="contact-info">
+                <h4>Contact Us</h4>
+                <p class="contact-email">📧 Email: <a href="{% url 'contact' %}">Contact Us</a></p>
+                <p class="contact-phone">📱 Phone: <a href="tel:+254113798611">+254113798611</a></p>
+            </div>
+
+            <div class="social-media">
+                <h4>Follow Us</h4>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/profile.php?id=61571856184982" class="social-link facebook" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://x.com/kijanaWamaina" class="social-link twitter" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/popewilly_?igsh=MWtzd2x5ZHM2OWRycg==" class="social-link instagram" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <!--<a href="#" class="social-link linkedin" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>-->
+                    <a href="https://vm.tiktok.com/ZS91FnhMLvjst-Q2WXQ/" class="social-link tiktok" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://wa.me/254746982658" class="social-link whatsapp" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <p class="footer-privacy">
+            Reports are anonymous by system design.
+        </p>
+
+        <p class="footer-copy">
+            © 2026 CampusFix | KYU Innovation Project
+        </p>
+    </div>
+</footer>
+</div>
+
+<script>
+const hamburgerBtn = document.getElementById("hamburger-btn");
+const overlay = document.getElementById("mobile-menu-overlay");
+const closeBtn = document.getElementById("close-menu-btn");
+hamburgerBtn.addEventListener("click", () => {
+    overlay.classList.add("active");
+});
+closeBtn.addEventListener("click", () => {
+    overlay.classList.remove("active");
+});
+overlay.addEventListener("click", (e) => {
+    if(e.target === overlay){
+        overlay.classList.remove("active");
+    }
+});
+</script>
+
+{% block js %}{% endblock %}
+</body>
+</html>
+
+

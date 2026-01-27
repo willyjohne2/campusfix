@@ -1,0 +1,53 @@
+/* Light theme for CampusFix admin */
+
+body {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+/* Header / branding */
+#header, #user-tools {
+  background: #f8fafc !important;
+  border-bottom: 1px solid #e6eefc !important;
+}
+
+.campusfix-branding #site-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.campusfix-title {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 1.1rem;
+}
+
+/* Links and accents */
+a, .model-addlink {
+  color: #2563eb !important;
+}
+
+/* Buttons */
+.button, input[type=submit], .grp-button, .submit-row .default {
+  background-color: #2563eb !important;
+  border-color: #1e40af !important;
+  color: #fff !important;
+}
+
+/* Boxes and fields */
+fieldset.module {
+  background: #ffffff;
+  border: 1px solid #e6eefc !important;
+}
+
+/* Login page tweaks */
+.campusfix-login-wrap { text-align: center; }
+.campusfix-login-logo { margin-bottom: 12px; }
+
+/* Index welcome */
+.campusfix-admin-index h2 { color: #0f172a; margin-bottom: 4px; }
+.campusfix-admin-index .muted { color: #475569; margin-bottom: 12px; }
+
+/* Footer */
+#footer { background: #f8fafc !important; color: #475569 !important; }

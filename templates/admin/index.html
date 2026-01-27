@@ -1,0 +1,10 @@
+{% extends "admin/index.html" %}
+{% load i18n static %}
+
+{% block content %}
+  <div class="campusfix-admin-index">
+    <h2>Welcome, Super Admin</h2>
+    <p class="muted">Use this control center to manage users, admins, and system-wide settings.</p>
+    {{ block.super }}
+  </div>
+{% endblock %}

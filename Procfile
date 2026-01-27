@@ -1,0 +1,1 @@
+web: gunicorn campusFix.wsgi --log-file -

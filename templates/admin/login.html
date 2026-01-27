@@ -1,0 +1,11 @@
+{% extends "admin/login.html" %}
+{% load static i18n %}
+
+{% block content %}
+  <div class="campusfix-login-wrap">
+    <div class="campusfix-login-logo">
+      <img src="{% static 'admin/img/campusfix-logo.svg' %}" alt="CampusFix" height="80">
+    </div>
+    {{ block.super }}
+  </div>
+{% endblock %}

@@ -1,0 +1,241 @@
+/* Register Form Validation Styles */
+
+/* Enhanced form styling with better spacing */
+.auth-form {
+    gap: 1.25rem;
+}
+
+/* Form group with validation states */
+.form-group {
+    position: relative;
+}
+
+/* Input focus states with smooth transitions */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    background-color: #ffffff;
+}
+
+/* Validation success state */
+input[type="text"].is-valid,
+input[type="email"].is-valid,
+input[type="password"].is-valid {
+    border-color: #10b981 !important;
+    background-color: rgba(16, 185, 129, 0.05) !important;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1) !important;
+}
+
+input[type="text"].is-invalid,
+input[type="email"].is-invalid,
+input[type="password"].is-invalid {
+    border-color: #ef4444 !important;
+    background-color: rgba(239, 68, 68, 0.05) !important;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important;
+}
+
+/* Validation messages */
+.validation-message {
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: slideIn 0.3s ease-out;
+}
+
+.validation-message.success {
+    color: #10b981;
+}
+
+.validation-message.error {
+    color: #ef4444;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Submit button states */
+.btn-submit {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.btn-submit:disabled:hover {
+    background-color: #2563eb;
+    box-shadow: none;
+    transform: none;
+}
+
+.btn-submit.loading {
+    pointer-events: none;
+}
+
+.btn-submit.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Password requirements list */
+.password-requirements {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 0.75rem 0;
+    display: none;
+}
+
+.password-requirements.active {
+    display: block;
+    animation: slideIn 0.3s ease-out;
+}
+
+.requirement-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.requirement-item:last-child {
+    margin-bottom: 0;
+}
+
+.requirement-item.met {
+    color: #10b981;
+}
+
+.requirement-item.unmet {
+    color: #ef4444;
+}
+
+.requirement-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.1rem;
+    height: 1.1rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+/* Tooltip for field hints */
+.field-hint {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-top: 0.4rem;
+    transition: all 0.3s ease;
+}
+
+.field-hint.visible {
+    opacity: 1;
+}
+
+/* Tooltip icon next to label */
+.tooltip-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: #e5e7eb;
+    color: #6b7280;
+    font-size: 0.7rem;
+    cursor: help;
+    margin-left: 0.25rem;
+}
+
+.tooltip-icon:hover {
+    background-color: #d1d5db;
+}
+
+/* Form validation summary */
+.validation-summary {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: none;
+}
+
+.validation-summary.active {
+    display: block;
+    animation: slideIn 0.3s ease-out;
+}
+
+.validation-summary-title {
+    font-weight: 600;
+    color: #991b1b;
+    margin-bottom: 0.5rem;
+}
+
+.validation-summary-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.validation-summary-list li {
+    font-size: 0.85rem;
+    color: #7f1d1d;
+    padding: 0.25rem 0;
+}
+
+.validation-summary-list li::before {
+    content: '• ';
+    margin-right: 0.5rem;
+    font-weight: bold;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .password-requirements {
+        padding: 0.75rem;
+    }
+
+    .requirement-item {
+        font-size: 0.8rem;
+    }
+}

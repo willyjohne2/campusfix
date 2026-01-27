@@ -1,0 +1,368 @@
+/* RESET / BASE */
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Roboto, sans-serif;
+}
+
+/* STICKY FOOTER LAYOUT */
+.page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-content {
+    flex: 1;
+}
+
+/* HEADER */
+.site-header {
+    background-color: #0f172a;
+    color: #e5e7eb;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 100;
+}
+
+.logo {
+    font-family: Lobster, cursive;
+    font-size: 2.2rem;
+    margin: 0;
+}
+
+/* Desktop nav */
+#nav-menu ul {
+    list-style: none;
+    display: flex;
+    gap: 1.2rem;
+    padding: 0;
+    margin: 0;
+}
+
+#nav-menu ul li a {
+    color: #93c5fd;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+}
+
+#nav-menu ul li a:hover {
+    text-decoration: underline;
+}
+
+/* HAMBURGER */
+.hamburger {
+    display: none;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    color: #e5e7eb;
+    cursor: pointer;
+}
+
+/* MOBILE MENU OVERLAY */
+#mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    z-index: 999;
+}
+
+#mobile-menu-overlay.active {
+    display: block;
+}
+
+#nav-menu-mobile {
+    background-color: #0f172a;
+    width: 80%;
+    max-width: 300px;
+    height: 100%;
+    padding: 2rem 1rem;
+    color: white;
+    position: relative;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+#mobile-menu-overlay.active #nav-menu-mobile {
+    transform: translateX(0);
+}
+
+#nav-menu-mobile ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 2rem;
+    text-align: left;
+}
+
+#nav-menu-mobile ul li {
+    margin-bottom: 1rem;
+}
+
+#nav-menu-mobile ul li a {
+    color: #93c5fd;
+    text-decoration: none;
+    font-size: clamp(1.2rem, 2vw, 1.4rem);
+}
+
+#nav-menu-mobile ul li a:hover {
+    text-decoration: underline;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+/* CTA SECTION */
+.cta-section {
+    background-color: #f1f5f9;
+    padding: 3rem 1rem;
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.cta-section h3 {
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    margin-bottom: 0.5rem;
+    color: #0f172a;
+}
+
+.cta-section p {
+    color: #475569;
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+    font-size: clamp(1rem, 1.8vw, 1.1rem);
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.7rem 1.4rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.btn-secondary {
+    background-color: #0f172a;
+    color: white;
+    padding: 0.7rem 1.4rem;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+    opacity: 0.9;
+}
+
+/* MOBILE NAV */
+@media (max-width: 768px) {
+    /* Show hamburger, hide desktop nav */
+    .hamburger { display: block; }
+    #nav-menu { display: none; }
+
+    /* Ensure overlay covers entire page */
+    #mobile-menu-overlay { display: none; }
+    #mobile-menu-overlay.active { display: block; }
+}
+  
+/* FOOTER */
+.site-footer {
+    background-color: #0f172a;
+    color: #e5e7eb;
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
+.footer-content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+}
+
+.footer-links a {
+    color: #93c5fd;
+    text-decoration: none;
+    font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.footer-copy {
+    font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+    color: #9ca3af;
+}
+
+/* Footer Contact & Social Media */
+.footer-contact-section {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+    padding: 2rem 0;
+    border-top: 1px solid #374151;
+    border-bottom: 1px solid #374151;
+}
+
+.contact-info {
+    text-align: left;
+}
+
+.contact-info h4 {
+    color: #2563eb;
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    margin: 0 0 0.75rem 0;
+}
+
+.contact-email,
+.contact-phone {
+    font-size: 0.9rem;
+    color: #d1d5db;
+    margin: 0.5rem 0;
+}
+
+.contact-email a,
+.contact-phone a {
+    color: #93c5fd;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.contact-email a:hover,
+.contact-phone a:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+/* Social Media Icons */
+.social-media {
+    text-align: left;
+}
+
+.social-media h4 {
+    color: #2563eb;
+    font-size: 1rem;
+    margin: 0 0 0.75rem 0;
+}
+
+.social-icons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #1f2937;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    border: 2px solid #2563eb;
+}
+
+.social-link i {
+    font-size: 1.2rem;
+}
+
+.social-link:hover {
+    background-color: #2563eb;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+    .footer-contact-section {
+        gap: 2rem;
+        padding: 1.5rem 0;
+    }
+
+    .contact-info,
+    .social-media {
+        text-align: center;
+        flex: 1 1 100%;
+    }
+
+    .social-icons {
+        justify-content: center;
+    }
+
+    .social-link {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-contact-section {
+        gap: 1.5rem;
+        padding: 1rem 0;
+        flex-direction: column;
+    }
+
+    .contact-info h4,
+    .social-media h4 {
+        font-size: 0.95rem;
+    }
+
+    .contact-email,
+    .contact-phone {
+        font-size: 0.85rem;
+    }
+
+    .social-link {
+        width: 36px;
+        height: 36px;
+        font-size: 0.95rem;
+    }
+
+    .social-icons {
+        justify-content: center;
+    }
+}
+
+
+

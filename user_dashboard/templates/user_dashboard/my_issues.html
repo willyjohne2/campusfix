@@ -1,0 +1,142 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+<title>My Issues | CampusFix</title>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/my_issues.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="my-issues-container">
+
+    <!-- Header -->
+    <div class="issues-header">
+        <h1>My Issues</h1>
+        <p class="issues-count">Total: {{ total_count }} issue{{ total_count|pluralize }}</p>
+    </div>
+
+    <!-- Navigation Menu (Desktop) -->
+    <nav class="nav-menu-desktop">
+        <a href="{% url 'report_issue' %}" class="nav-btn btn-primary">
+            <span>📝</span> Report New Issue
+        </a>
+        <a href="{% url 'issue_list' %}" class="nav-btn btn-secondary">
+            <span>📊</span> View All Issues
+        </a>
+        <a href="{% url 'dashboard_home' %}" class="nav-btn btn-secondary">
+            <span>🏠</span> Back to Dashboard
+        </a>
+    </nav>
+
+    <!-- Secondary Hamburger Menu (Mobile) - Below Title -->
+    <div class="mobile-menu-header">
+        <span class="mobile-filter-label">Quick Links</span>
+        <div class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <!-- Navigation Menu (Mobile - Hidden by default) -->
+    <nav class="nav-menu-mobile" id="navMenuMobile">
+        <a href="{% url 'report_issue' %}" class="nav-btn btn-primary">
+            <span>📝</span> Report New Issue
+        </a>
+        <a href="{% url 'issue_list' %}" class="nav-btn btn-secondary">
+            <span>📊</span> View All Issues
+        </a>
+        <a href="{% url 'dashboard_home' %}" class="nav-btn btn-secondary">
+            <span>🏠</span> Back to Dashboard
+        </a>
+    </nav>
+
+    <!-- Issues List -->
+    <section class="issues-list-section">
+        {% if issues %}
+            <div class="issues-list">
+                {% for issue in issues %}
+                    <div class="issue-item">
+                        <div class="issue-info">
+                            <div class="issue-header-row">
+                                <h3 class="issue-title">{{ issue.title }}</h3>
+                                <span class="status-badge status-{{ issue.status|lower|cut:' ' }}">
+                                    {{ issue.status }}
+                                </span>
+                            </div>
+                            
+                            <div class="issue-meta">
+                                <span class="category-tag">{{ issue.category }}</span>
+                                <span class="priority-tag priority-{{ issue.priority|lower }}">{{ issue.priority }}</span>
+                                <span class="date-tag">{{ issue.created_at|date:"M d, Y" }}</span>
+                            </div>
+
+                            <p class="issue-description">{{ issue.description|truncatewords:30 }}</p>
+
+                            <div class="issue-stats">
+                                <span class="stat">💬 {{ issue.comments.count }} comments</span>
+                                <span class="stat">👁️ Views</span>
+                            </div>
+                        </div>
+
+                        <div class="issue-actions">
+                            <a href="{% url 'issue_detail' issue.id %}" class="btn-view-detail">View Details →</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if issues.has_other_pages %}
+                <div class="pagination">
+                    {% if issues.has_previous %}
+                        <a href="?page=1" class="page-btn">First</a>
+                        <a href="?page={{ issues.previous_page_number }}" class="page-btn">Previous</a>
+                    {% endif %}
+
+                    <span class="page-info">
+                        Page {{ issues.number }} of {{ issues.paginator.num_pages }}
+                    </span>
+
+                    {% if issues.has_next %}
+                        <a href="?page={{ issues.next_page_number }}" class="page-btn">Next</a>
+                        <a href="?page={{ issues.paginator.num_pages }}" class="page-btn">Last</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="no-issues">
+                <p class="no-issues-icon">📋</p>
+                <p class="no-issues-text">You haven't reported any issues yet.</p>
+                <a href="{% url 'report_issue' %}" class="btn-report">Report Your First Issue</a>
+            </div>
+        {% endif %}
+    </section>
+
+</main>
+
+<script>
+    // Hamburger menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenuMobile = document.getElementById('navMenuMobile');
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', function() {
+            navMenuMobile.classList.toggle('active');
+        });
+
+        // Close menu when a link is clicked
+        const navLinks = navMenuMobile.querySelectorAll('.nav-btn');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                navMenuMobile.classList.remove('active');
+            });
+        });
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+<title>Admin Dashboard | CampusFix</title>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="admin-container">
+    <!-- Dashboard Header -->
+    <section class="admin-header">
+        <div class="header-content">
+            <h1>Admin Dashboard</h1>
+            <p class="header-subtitle">Manage and resolve campus issues</p>
+        </div>
+        <div class="header-actions">
+            <a href="{% url 'admin_issue_list' %}" class="btn-primary">View All Issues</a>
+            <a href="{% url 'admin_activity_log' %}" class="btn-secondary">Activity Log</a>
+        </div>
+    </section>
+
+    <!-- Key Metrics -->
+    <section class="metrics-section">
+        <div class="metric-card total">
+            <div class="metric-icon">📋</div>
+            <div class="metric-content">
+                <h3>Total Issues</h3>
+                <p class="metric-value">{{ total_issues }}</p>
+            </div>
+        </div>
+        <div class="metric-card pending">
+            <div class="metric-icon">⏳</div>
+            <div class="metric-content">
+                <h3>Pending</h3>
+                <p class="metric-value">{{ pending_issues }}</p>
+            </div>
+        </div>
+        <div class="metric-card in-progress">
+            <div class="metric-icon">🔧</div>
+            <div class="metric-content">
+                <h3>In Progress</h3>
+                <p class="metric-value">{{ in_progress_issues }}</p>
+            </div>
+        </div>
+        <div class="metric-card resolved">
+            <div class="metric-icon">✅</div>
+            <div class="metric-content">
+                <h3>Resolved</h3>
+                <p class="metric-value">{{ resolved_issues }}</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Issues -->
+    <section class="recent-section">
+        <h2>Recent Issues</h2>
+        <div class="recent-issues-list">
+            {% if recent_issues %}
+                <table class="issues-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Reporter</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for issue in recent_issues %}
+                        <tr>
+                            <td><strong>{{ issue.title }}</strong></td>
+                            <td><span class="badge category">{{ issue.category }}</span></td>
+                            <td><span class="badge priority-{{ issue.priority|lower }}">{{ issue.priority }}</span></td>
+                            <td><span class="badge status-{{ issue.status|lower|slugify }}">{{ issue.status }}</span></td>
+                            <td>{{ issue.reported_by.first_name|default:issue.reported_by.username }}</td>
+                            <td>{{ issue.created_at|date:"M d, Y" }}</td>
+                            <td><a href="{% url 'admin_issue_detail' issue.id %}" class="btn-link">View</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="no-data">No issues available.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Recent Messages -->
+    <section class="recent-section">
+        <h2>Recent Contact Messages</h2>
+        <div class="recent-issues-list">
+            <style>
+                @media (max-width: 640px) {
+                    .admin-mobile-hide { display: none !important; }
+                    .recent-issues-list table { font-size: 0.95rem; }
+                    .recent-issues-list table td, .recent-issues-list table th { padding: 8px 6px; }
+                }
+            </style>
+            {% if recent_messages %}
+                <table class="issues-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Subject</th>
+                            <th class="admin-mobile-hide">Received</th>
+                            <th class="admin-mobile-hide">Read</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for m in recent_messages %}
+                        <tr>
+                            <td>{{ m.name }}</td>
+                            <td>{{ m.subject }}</td>
+                            <td class="admin-mobile-hide">{{ m.created_at|date:"M d, Y" }}</td>
+                            <td class="admin-mobile-hide">{% if m.is_read %}Yes{% else %}No{% endif %}</td>
+                            <td>
+                                <a href="{% url 'contact_reply' m.id %}" class="btn-link">View / Reply</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="no-data">No messages available.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Recent Activity -->
+    {% if recent_activity %}
+    <section class="activity-section">
+        <h2>Your Recent Activity</h2>
+        <div class="activity-feed">
+            {% for activity in recent_activity %}
+            <div class="activity-item">
+                <span class="activity-icon">📝</span>
+                <div class="activity-details">
+                    <p><strong>{{ activity.issue.title }}</strong></p>
+                    <p class="activity-action">{{ activity.action }}</p>
+                    <span class="activity-time">{{ activity.timestamp|date:"M d, Y H:i" }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+</main>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+<title>{{ issue.title }} | CampusFix</title>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/issues.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="dashboard-container">
+  <div class="page-header">
+    <h2>Issue Details</h2>
+    <div class="header-actions">
+      <a href="{% url 'issue_list' %}" class="btn-secondary">All Issues</a>
+      <a href="{% url 'my_issues' %}" class="btn-secondary">My Issues</a>
+      <a href="{% url 'dashboard_home' %}" class="btn-secondary">Dashboard</a>
+    </div>
+  </div>
+
+  <div class="issue-detail-card">
+    <div class="issue-header-detail">
+      <h3>{{ issue.title }}</h3>
+      <span class="issue-badge issue-status-{{ issue.status|lower }}">{{ issue.get_status_display }}</span>
+    </div>
+
+    <div class="issue-info-grid">
+      <div class="info-item">
+        <label>Category</label>
+        <span>{{ issue.get_category_display }}</span>
+      </div>
+      <div class="info-item">
+        <label>Priority</label>
+        <span class="priority-{{ issue.priority|lower }}">{{ issue.get_priority_display }}</span>
+      </div>
+      <div class="info-item">
+        <label>Reported By</label>
+        <span>{{ issue.reported_by.profile.name }}</span>
+      </div>
+      <div class="info-item">
+        <label>Reported Date</label>
+        <span>{{ issue.created_at|date:"M d, Y H:i" }}</span>
+      </div>
+    </div>
+
+    <div class="issue-description">
+      <label><strong>Description</strong></label>
+      <p>{{ issue.description }}</p>
+    </div>
+
+    {% if issue.attachment %}
+      <div class="issue-attachment">
+        <label><strong>Attachment</strong></label>
+        <img src="{{ issue.attachment.url }}" alt="Issue attachment" style="max-width: 100%; height: auto; border-radius: 8px;">
+      </div>
+    {% endif %}
+
+    {% if issue.admin_notes %}
+      <div class="admin-notes">
+        <label><strong>Admin Notes</strong></label>
+        <p>{{ issue.admin_notes }}</p>
+      </div>
+    {% endif %}
+
+    <!-- Admin Update Section -->
+    {% if user.is_staff %}
+      <div class="admin-section">
+        <h4>Admin Actions</h4>
+        <a href="{% url 'update_issue_status' issue.id %}" class="btn-primary">Update Status</a>
+      </div>
+    {% endif %}
+
+    <!-- Delete Button -->
+    {% if can_edit %}
+      <div class="action-buttons">
+        {% if user == issue.reported_by %}
+          <a href="{% url 'delete_issue' issue.id %}" class="btn-danger" onclick="return confirm('Are you sure?')">Delete Issue</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Comments Section -->
+  <div class="comments-section">
+    <h3>Comments ({{ comments.count }})</h3>
+
+    {% if user.is_authenticated %}
+      <div class="comment-form">
+        <form method="POST">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="id_content">Add a Comment</label>
+            <textarea name="content" id="id_content" rows="3" placeholder="Share your thoughts..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary">Post Comment</button>
+        </form>
+      </div>
+    {% else %}
+      <p><a href="{% url 'login' %}">Login</a> to add comments</p>
+    {% endif %}
+
+    <div class="comments-list">
+      {% if comments %}
+        {% for comment in comments %}
+          <div class="comment">
+            <div class="comment-header">
+              <strong>{{ comment.author.profile.name }}</strong>
+              <span class="comment-date">{{ comment.created_at|date:"M d, Y H:i" }}</span>
+            </div>
+            <p>{{ comment.content }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No comments yet. Be the first to comment!</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Navigation Buttons -->
+  <div class="navigation-buttons">
+    <a href="{% url 'issue_list' %}" class="btn-secondary">← Back to All Issues</a>
+    <a href="{% url 'my_issues' %}" class="btn-secondary">My Issues</a>
+    <a href="{% url 'dashboard_home' %}" class="btn-secondary">Dashboard →</a>
+  </div>
+</main>
+{% endblock %}

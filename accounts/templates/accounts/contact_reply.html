@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}<title>Reply to Contact</title>{% endblock %}
+
+{% block content %}
+<main>
+  <section style="max-width:800px;margin:2rem auto;padding:1rem;background:#fff;border-radius:8px;">
+    {% load accounts_extras %}
+    <h2>Reply to: {{ contact.name }} &lt;{% if request.user.is_superuser %}{{ contact.email }}{% else %}{{ contact.email|mask_email }}{% endif %}&gt;</h2>
+    <p><strong>Subject:</strong> {{ contact.subject }}</p>
+    <div style="margin:1rem 0;padding:0.75rem;border:1px solid #e5e7eb;border-radius:6px;background:#f9fafb;white-space:pre-wrap;">{{ contact.message }}</div>
+
+    <h3>Previous replies</h3>
+    {% if contact.replies.exists %}
+      <ul>
+        {% for r in contact.replies.all %}
+          <li>
+            <strong>
+              {% if r.replier %}
+                {{ r.replier.get_full_name|default:r.replier.username }}
+              {% else %}
+                (deleted user)
+              {% endif %}
+            </strong>
+            — {{ r.created_at|date:"M d, Y H:i" }}
+            <div style="margin-top:6px;padding:6px;border-left:3px solid #2563eb;background:#fff;">{{ r.reply_text }}</div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No replies yet.</p>
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.reply_text }}
+      <div style="margin-top:0.75rem;">
+        <button type="submit" class="btn-primary">Send Reply</button>
+        <a href="{% url 'contact_view' contact.id %}" class="btn-secondary" style="margin-left:0.5rem;">View</a>
+        <a href="{% url 'contact_messages_list' %}" class="btn-secondary" style="margin-left:0.5rem;">Back</a>
+      </div>
+    </form>
+
+    <div style="margin-top:0.75rem;">
+      <form method="post" action="{% url 'contact_soft_delete' contact.id %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" onclick="return confirm('Are you sure you want to delete this message?')" class="btn-secondary" style="background:#fff;border:1px solid #f87171;color:#b91c1c;">Delete</button>
+      </form>
+      {% if request.user.is_superuser %}
+        <form method="post" action="{% url 'contact_hard_delete' contact.id %}" style="display:inline; margin-left:8px;">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('Permanently delete this message? This action cannot be undone.')" class="btn-secondary" style="background:#7f1d1d;border:1px solid #7f1d1d;color:#fff;">Hard Delete</button>
+        </form>
+      {% endif %}
+    </div>
+  </section>
+</main>
+{% endblock %}

@@ -1,0 +1,152 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+<title>Issues | CampusFix</title>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/issues.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="dashboard-container">
+  <div class="page-header">
+    <h2>{% if my_issues %}My Reported Issues{% else %}All Campus Issues{% endif %}</h2>
+    <!-- Desktop Navigation -->
+    <div class="header-actions">
+      {% if user.is_authenticated %}
+        <a href="{% url 'report_issue' %}" class="btn-primary">Report New Issue</a>
+        {% if my_issues %}
+          <a href="{% url 'issue_list' %}" class="btn-secondary">View All Issues</a>
+        {% else %}
+          <a href="{% url 'my_issues' %}" class="btn-secondary">My Issues</a>
+        {% endif %}
+        <a href="{% url 'dashboard_home' %}" class="btn-secondary">Dashboard</a>
+      {% endif %}
+    </div>
+    <!-- Mobile Hamburger Menu -->
+    <div class="header-hamburger" id="headerHamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation Menu -->
+  <nav class="header-actions-mobile" id="headerActionsMobile">
+    {% if user.is_authenticated %}
+      <a href="{% url 'report_issue' %}" class="btn-primary">📝 Report New Issue</a>
+      {% if my_issues %}
+        <a href="{% url 'issue_list' %}" class="btn-secondary">📊 View All Issues</a>
+      {% else %}
+        <a href="{% url 'my_issues' %}" class="btn-secondary">📋 My Issues</a>
+      {% endif %}
+      <a href="{% url 'dashboard_home' %}" class="btn-secondary">🏠 Dashboard</a>
+    {% endif %}
+  </nav>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <form method="GET" class="filter-form">
+      <div class="filter-group">
+        <select name="status" class="form-control">
+          <option value="">All Statuses</option>
+          <option value="Pending" {% if request.GET.status == 'Pending' %}selected{% endif %}>Pending</option>
+          <option value="In Progress" {% if request.GET.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+          <option value="Resolved" {% if request.GET.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+          <option value="Rejected" {% if request.GET.status == 'Rejected' %}selected{% endif %}>Rejected</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <select name="category" class="form-control">
+          <option value="">All Categories</option>
+          <option value="Maintenance" {% if request.GET.category == 'Maintenance' %}selected{% endif %}>Maintenance</option>
+          <option value="IT" {% if request.GET.category == 'IT' %}selected{% endif %}>IT</option>
+          <option value="Facilities" {% if request.GET.category == 'Facilities' %}selected{% endif %}>Facilities</option>
+          <option value="Cleanliness" {% if request.GET.category == 'Cleanliness' %}selected{% endif %}>Cleanliness</option>
+          <option value="Security" {% if request.GET.category == 'Security' %}selected{% endif %}>Security</option>
+          <option value="Other" {% if request.GET.category == 'Other' %}selected{% endif %}>Other</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <input type="text" name="search" placeholder="Search issues..." value="{{ request.GET.search }}" class="form-control">
+      </div>
+
+      <button type="submit" class="btn-primary">Filter</button>
+      <a href="{% url 'issue_list' %}" class="btn-secondary">Clear Filters</a>
+    </form>
+  </div>
+
+  <!-- Issues List -->
+  <div class="issues-container">
+    {% if issues %}
+      <p class="issue-count">Total: {{ total_count }} issue{{ total_count|pluralize }}</p>
+      <ul class="issues-list">
+        {% for issue in issues %}
+          <li class="issue-item">
+            <div class="issue-header">
+              <a href="{% url 'issue_detail' issue.id %}" class="issue-title">{{ issue.title }}</a>
+              <span class="issue-badge issue-status-{{ issue.status|lower }}">{{ issue.get_status_display }}</span>
+            </div>
+            <div class="issue-meta">
+              <span class="issue-category">{{ issue.get_category_display }}</span>
+              <span class="issue-priority priority-{{ issue.priority|lower }}">{{ issue.get_priority_display }}</span>
+              <span class="issue-date">{{ issue.created_at|date:"M d, Y" }}</span>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <!-- Pagination -->
+      {% if issues.has_other_pages %}
+        <div class="pagination">
+          {% if issues.has_previous %}
+            <a href="?page=1" class="btn-secondary">First</a>
+            <a href="?page={{ issues.previous_page_number }}" class="btn-secondary">Previous</a>
+          {% endif %}
+          
+          <span class="page-info">Page {{ issues.number }} of {{ issues.paginator.num_pages }}</span>
+          
+          {% if issues.has_next %}
+            <a href="?page={{ issues.next_page_number }}" class="btn-secondary">Next</a>
+            <a href="?page={{ issues.paginator.num_pages }}" class="btn-secondary">Last</a>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="empty-state">
+        <p>No issues found.</p>
+        {% if user.is_authenticated %}
+          <a href="{% url 'report_issue' %}" class="btn-primary">Report the first issue</a>
+        {% else %}
+          <p><a href="{% url 'login' %}" class="btn-secondary">Login</a> to report issues</p>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</main>
+
+<script>
+  // Hamburger menu toggle for header actions
+  const headerHamburger = document.getElementById('headerHamburger');
+  const headerActionsMobile = document.getElementById('headerActionsMobile');
+
+  if (headerHamburger) {
+    headerHamburger.addEventListener('click', function() {
+      headerActionsMobile.classList.toggle('active');
+    });
+
+    // Close menu when a link is clicked
+    const actionLinks = headerActionsMobile.querySelectorAll('a');
+    actionLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        headerActionsMobile.classList.remove('active');
+      });
+    });
+  }
+</script>
+
+{% endblock %}

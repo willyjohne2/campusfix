@@ -1,0 +1,511 @@
+.dashboard-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1rem;
+}
+
+/* Auth Container */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: auto;
+    padding: 1.5rem 1rem;
+    background-color: #f8fafc;
+}
+
+.auth-card {
+    background-color: #ffffff;
+    padding: 3rem 2rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 450px;
+    animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Auth Header */
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-title {
+    font-size: 2rem;
+    color: #1f2937;
+    margin: 0 0 0.5rem 0;
+    font-weight: 700;
+}
+
+.auth-subtitle {
+    font-size: 0.95rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Auth Form */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Form Group */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Form Inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    padding: 0.875rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background-color: #f9fafb;
+}
+
+/* Password input wrapper */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 2.5rem;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 0.875rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.toggle-password:hover {
+    color: #2563eb;
+    transform: scale(1.1);
+}
+
+.toggle-password:active {
+    transform: scale(0.95);
+}
+
+.eye-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.toggle-password:hover {
+    color: #2563eb;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #2563eb;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder {
+    color: #9ca3af;
+}
+
+/* Error Styles */
+.error-messages {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.error-alert {
+    padding: 0.75rem 1rem;
+    background-color: #fee2e2;
+    color: #991b1b;
+    border-radius: 8px;
+    border-left: 4px solid #dc2626;
+    font-size: 0.9rem;
+    position: relative;
+    padding-right: 2.5rem;
+}
+
+.success-message {
+    padding: 0.75rem 1rem;
+    background-color: #ecfdf5;
+    color: #047857;
+    border-radius: 8px;
+    border-left: 4px solid #10b981;
+    font-size: 0.9rem;
+    position: relative;
+    padding-right: 2.5rem;
+    animation: slideDown 0.3s ease-out;
+}
+
+.dismiss-btn {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+    padding: 0.25rem 0.5rem;
+}
+
+.dismiss-btn:hover {
+    opacity: 1;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.field-errors {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.error-text {
+    font-size: 0.85rem;
+    color: #dc2626;
+    font-weight: 500;
+}
+
+/* Buttons */
+.btn-submit {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.95rem 1.5rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-submit:hover {
+    background-color: #1e40af;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+.btn-register {
+    margin-top: 0.5rem;
+}
+
+/* Checkbox styling for "Remember Me" */
+.form-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.form-checkbox input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    cursor: pointer;
+    accent-color: #2563eb;
+}
+
+.form-checkbox label {
+    cursor: pointer;
+    margin: 0;
+    font-weight: 400;
+    color: #374151;
+}
+
+/* Auth Footer */
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.footer-text {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.footer-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.footer-link:hover {
+    color: #1e40af;
+    text-decoration: underline;
+}
+
+/* Success Icon */
+.success-icon {
+    font-size: 3rem;
+    color: #10b981;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+/* Success Message */
+.success-message {
+    background-color: #ecfdf5;
+    border-left: 4px solid #10b981;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.success-message p {
+    color: #047857;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0.5rem 0;
+}
+
+/* Old form-card styles (kept for compatibility) */
+.form-card {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.form-title {
+    font-size: 1.8rem;
+    color: #2563eb;
+    margin-bottom: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    .auth-container {
+        padding: 1rem;
+    }
+
+    .auth-card {
+        padding: 2rem 1.5rem;
+        border-radius: 16px;
+    }
+
+    .auth-title {
+        font-size: 1.5rem;
+    }
+
+    .auth-subtitle {
+        font-size: 0.85rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
+/* Validation Icons */
+.validation-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.validation-icon.valid {
+    opacity: 1;
+    color: #10b981;
+}
+
+.validation-icon.invalid {
+    opacity: 1;
+    color: #ef4444;
+}
+
+/* Password Strength Indicator */
+.password-strength {
+    display: none;
+    height: 4px;
+    background-color: #e5e7eb;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+    overflow: hidden;
+}
+
+.password-strength.active {
+    display: block;
+}
+
+.strength-bar {
+    height: 100%;
+    width: 0%;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    background-color: #ef4444;
+}
+
+.strength-bar.weak {
+    width: 33%;
+    background-color: #ef4444;
+}
+
+.strength-bar.fair {
+    width: 66%;
+    background-color: #f59e0b;
+}
+
+.strength-bar.good {
+    width: 100%;
+    background-color: #3b82f6;
+}
+
+.strength-bar.strong {
+    width: 100%;
+    background-color: #10b981;
+}
+
+.strength-text {
+    font-size: 0.8rem;
+    margin: 0.25rem 0 0.5rem 0;
+    display: none;
+}
+
+.strength-text.active {
+    display: block;
+}
+
+.strength-text.weak {
+    color: #ef4444;
+}
+
+.strength-text.fair {
+    color: #f59e0b;
+}
+
+.strength-text.good {
+    color: #3b82f6;
+}
+
+.strength-text.strong {
+    color: #10b981;
+}
+
+/* Field Hint */
+.field-hint {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+    min-height: 1.2rem;
+    display: none;
+}
+
+.field-hint.active {
+    display: block;
+}
+
+.field-hint.success {
+    color: #10b981;
+}
+
+.field-hint.error {
+    color: #ef4444;
+}
+
+/* Form Input States */
+input[type="text"].valid,
+input[type="email"].valid,
+input[type="password"].valid {
+    border-color: #10b981;
+    background-color: #f0fdf4;
+}
+
+input[type="text"].invalid,
+input[type="email"].invalid,
+input[type="password"].invalid {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+}
