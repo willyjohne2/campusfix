@@ -26,35 +26,29 @@ load_dotenv(BASE_DIR / ".env")
 
 # SECURITY: load secret and runtime flags from environment
 # In production set DJANGO_SECRET_KEY and DJANGO_DEBUG=False and ALLOWED_HOSTS
-SECRET_KEY = os.environ.get(
-    "DJANGO_SECRET_KEY",
-    "django-insecure-@)ml4gb3$w57e))k07ldfdhfh5g87flsae-le45^3vz*y3u%&r",
-)
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+if not SECRET_KEY:
+    raise RuntimeError("DJANGO_SECRET_KEY environment variable is not set")
 
 # DEBUG should be False in production. For local development default to True
 # (set DJANGO_DEBUG=False in production environment variables).
-DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
+DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 
 # ALLOWED_HOSTS can be provided as a comma-separated env var, e.g. ALLOWED_HOSTS=example.com,api.example.com
+# ─── ALLOWED HOSTS ─────────────────────────────────────────────
 ALLOWED_HOSTS = [
     h.strip()
-    for h in os.environ.get("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+    for h in os.environ.get("ALLOWED_HOSTS", "").split(",")
     if h.strip()
 ]
 
-# Optional: CSRF trusted origins (comma-separated)
+if DEBUG:
+    ALLOWED_HOSTS += ["127.0.0.1", "localhost", "0.0.0.0"]
+
+# ─── CSRF TRUSTED ORIGINS ──────────────────────────────────────
 raw_csrf = os.environ.get("CSRF_TRUSTED_ORIGINS", "")
 if raw_csrf:
     CSRF_TRUSTED_ORIGINS = [u.strip() for u in raw_csrf.split(",") if u.strip()]
-
-# During local development (DEBUG=True) include 0.0.0.0 so runserver bound to that
-# can be accessed via http://0.0.0.0:8000/ without a Bad Request (400).
-if DEBUG and "0.0.0.0" not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append("0.0.0.0")
-
-# Also include 0.0.0.0 to allow binding runserver to that address during testing
-if "0.0.0.0" not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append("0.0.0.0")
 
 
 # Application definition
