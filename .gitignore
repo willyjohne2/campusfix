@@ -9,4 +9,5 @@ media/
 .mypy_cache/
 node_modules/
 data.json
+staticfiles/
 
