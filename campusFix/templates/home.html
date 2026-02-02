@@ -13,36 +13,22 @@
 <main>
 
     <section class="intro">
-        {% if user.is_authenticated and user.profile.role == 'superadmin' or user.is_superuser %}
-            <h1>System Command Center</h1>
-            <p>
-                Welcome, Super Administrator. Monitor platform-wide metrics, manage user roles, 
-                and ensure system integrity from this overview.
-            </p>
-            <div class="cta-buttons">
-                <a href="{% url 'super_admin_dashboard' %}" class="btn-primary">View Super Admin Dashboard</a>
-            </div>
-        {% elif user.is_authenticated and user.profile.role == 'admin' or user.is_staff %}
-            <h1>Administrator Hub</h1>
-            <p>
-                Welcome back. Review unresolved issues, update system status, and manage 
-                campus-wide reports to improve student life.
-            </p>
-            <div class="cta-buttons">
-                <a href="{% url 'admin_dashboard_overview' %}" class="btn-primary">View Admin Dashboard</a>
-            </div>
-        {% else %}
-            <h1>CampusFix — Report. Track. Fix.</h1>
-            <p>
-                Welcome to CampusFix! Report any issues or challenges you face,
-                whether on campus or in your living spaces.
-                Stay anonymous and track your reports in real-time.
-            </p>
-            {% if user.is_authenticated %}
-                <a href="{% url 'report_issue' %}" class="btn-primary">Report New Issue</a>
+        <h1>CampusFix — Report. Track. Fix.</h1>
+        <p>
+            Welcome to CampusFix! Report any issues or challenges you face,
+            whether on campus or in your living spaces.
+            Stay anonymous and track your reports in real-time.
+        </p>
+        {% if user.is_authenticated %}
+            {% if user.profile.role == 'superadmin' %}
+                <a href="{% url 'super_admin_dashboard' %}" class="btn-primary">Go to Super Admin Dashboard</a>
+            {% elif user.profile.role == 'admin' %}
+                <a href="{% url 'admin_dashboard_overview' %}" class="btn-primary">Go to Admin Dashboard</a>
             {% else %}
-                <a href="{% url 'login' %}" class="btn-primary">Login to Report Issue</a>
+                <a href="{% url 'report_issue' %}" class="btn-primary">Report New Issue</a>
             {% endif %}
+        {% else %}
+            <a href="{% url 'login' %}" class="btn-primary">Login to Report Issue</a>
         {% endif %}
     </section>
 

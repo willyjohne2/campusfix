@@ -73,9 +73,9 @@
             <ul>
                 <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
                 {% if user.is_authenticated %}
-                    {% if user.profile.role == 'superadmin' or user.is_superuser %}
+                    {% if user.profile.role == 'superadmin' %}
                         <li><a href="{% url 'super_admin_dashboard' %}" class="nav-link">🛡️ Super Admin</a></li>
-                    {% elif user.profile.role == 'admin' or user.is_staff %}
+                    {% elif user.profile.role == 'admin' %}
                         <li><a href="{% url 'admin_dashboard_overview' %}" class="nav-link">👨‍💼 Admin Dashboard</a></li>
                     {% else %}
                         <li><a href="{% url 'report_issue' %}" class="nav-link">Report Issue</a></li>
@@ -94,9 +94,9 @@
         <ul>
             <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
             {% if user.is_authenticated %}
-                {% if user.profile.role == 'superadmin' or user.is_superuser %}
+                {% if user.profile.role == 'superadmin' %}
                     <li><a href="{% url 'super_admin_dashboard' %}" class="nav-link">🛡️ Super Admin</a></li>
-                {% elif user.profile.role == 'admin' or user.is_staff %}
+                {% elif user.profile.role == 'admin' %}
                     <li><a href="{% url 'admin_dashboard_overview' %}" class="nav-link">👨‍💼 Admin Dashboard</a></li>
                 {% else %}
                     <li><a href="{% url 'report_issue' %}" class="nav-link">Report Issue</a></li>
@@ -117,13 +117,13 @@
 
 <section class="cta-section">
     {% if user.is_authenticated %}
-        {% if user.profile.role == 'superadmin' or user.is_superuser %}
+        {% if user.profile.role == 'superadmin' %}
             <h3>Campus Overview</h3>
             <p>Monitor system-wide activity and manage administrator roles from your command center.</p>
             <div class="cta-buttons">
                 <a href="{% url 'super_admin_dashboard' %}" class="btn-primary">🛡️ Super Admin Dashboard</a>
             </div>
-        {% elif user.profile.role == 'admin' or user.is_staff %}
+        {% elif user.profile.role == 'admin' %}
             <h3>Manage Campus Issues</h3>
             <p>Review and resolve reported issues to improve campus life for everyone.</p>
             <div class="cta-buttons">
