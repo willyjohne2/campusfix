@@ -95,7 +95,11 @@ def login_view(request):
     Supports "Remember Me" checkbox to extend session timeout
     """
     if request.user.is_authenticated:
-        # Redirect based on role - check if profile exists first
+        # Check if SuperAdmin first
+        from accounts.models import SuperAdmin
+        if SuperAdmin.objects.filter(user=request.user, is_active=True).exists():
+            return redirect("super_admin_dashboard")
+        # Then check regular admin
         try:
             if request.user.profile.is_admin():
                 return redirect("admin_dashboard_overview")
@@ -157,12 +161,23 @@ def login_view(request):
             else:
                 request.session.set_expiry(0)  # Session expires when browser closes
 
-            messages.success(request, f"Welcome back, {user.profile.name}!")
-
-            # Redirect based on user role
-            if user.profile.is_admin():
-                return redirect("admin_dashboard_overview")
-            else:
+            # Redirect based on user role - check SuperAdmin first
+            from accounts.models import SuperAdmin
+            if SuperAdmin.objects.filter(user=user, is_active=True).exists():
+                messages.success(request, f"Welcome SuperAdmin {user.username}!")
+                return redirect("super_admin_dashboard")
+            
+            # Then check if regular admin
+            try:
+                if user.profile.is_admin():
+                    messages.success(request, f"Welcome back, {user.profile.name}!")
+                    return redirect("admin_dashboard_overview")
+                else:
+                    messages.success(request, f"Welcome back, {user.profile.name}!")
+                    return redirect("dashboard_home")
+            except Profile.DoesNotExist:
+                # User has no profile, send to dashboard
+                messages.success(request, f"Welcome back, {user.username}!")
                 return redirect("dashboard_home")
         else:
             messages.error(request, "Invalid email or password. Please try again.")
