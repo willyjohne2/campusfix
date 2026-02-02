@@ -13,11 +13,19 @@ from .forms import (
 
 
 @login_required(login_url="login")
+@login_required(login_url="login")
 def report_issue(request):
     """
     View for reporting a new issue
-    Handles form submission with validation
+    Only regular users (not admins/superadmins) can report issues
     """
+    # Check if user is an admin - admins can't report issues
+    if request.user.profile.is_admin():
+        messages.error(
+            request, "Administrators cannot report issues. Only regular users can."
+        )
+        return redirect("dashboard_home")
+
     if request.method == "POST":
         form = ReportIssueForm(request.POST, request.FILES)
         if form.is_valid():
@@ -28,6 +36,8 @@ def report_issue(request):
             return redirect("issue_detail", issue_id=issue.id)
         else:
             # Display form errors
+            if form.errors:
+                print(f"Form errors: {form.errors}")  # Debug output
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
@@ -125,11 +135,9 @@ def issue_detail(request, issue_id):
             messages.error(request, "You must be logged in to comment.")
             return redirect("login")
 
-        # Check if user can comment (only issue owner, admin, or super admin)
+        # Check if user can comment (only issue owner or admin)
         can_comment = (
-            request.user == issue.reported_by
-            or request.user.is_staff
-            or request.user.is_superuser
+            request.user == issue.reported_by or request.user.profile.is_admin()
         )
 
         if not can_comment:
@@ -171,11 +179,10 @@ def issue_detail(request, issue_id):
         "issue": issue,
         "comments": comments,
         "form": form,
-        "can_edit": request.user == issue.reported_by or request.user.is_staff,
+        "can_edit": request.user == issue.reported_by
+        or request.user.profile.is_admin(),
         "can_comment": (
-            request.user == issue.reported_by
-            or request.user.is_staff
-            or request.user.is_superuser
+            request.user == issue.reported_by or request.user.profile.is_admin()
         ),
     }
 
@@ -190,14 +197,14 @@ def delete_issue(request, issue_id):
     issue = get_object_or_404(Issue, id=issue_id)
 
     # Check permissions
-    if request.user != issue.reported_by and not request.user.is_staff:
+    if request.user != issue.reported_by and not request.user.profile.is_admin():
         messages.error(request, "You do not have permission to delete this issue.")
         return redirect("issue_detail", issue_id=issue.id)
 
     if request.method == "POST":
         issue.delete()
         messages.success(request, "Issue deleted successfully!")
-        if request.user.is_staff:
+        if request.user.profile.is_admin():
             return redirect("issue_list")
         else:
             return redirect("my_issues")
@@ -209,12 +216,12 @@ def delete_issue(request, issue_id):
 def update_issue_status(request, issue_id):
     """
     View for admins to update issue status
-    Only accessible to staff/admin users
+    Only accessible to admin users
     """
     issue = get_object_or_404(Issue, id=issue_id)
 
-    # Check if user is admin/staff
-    if not request.user.is_staff:
+    # Check if user is admin
+    if not request.user.profile.is_admin():
         messages.error(request, "You do not have permission to update issue status.")
         return redirect("issue_detail", issue_id=issue.id)
 

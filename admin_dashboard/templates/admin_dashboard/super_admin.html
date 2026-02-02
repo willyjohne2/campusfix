@@ -1,0 +1,627 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+<title>Super Admin Dashboard | CampusFix</title>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+<!-- Chart.js Library - Load early -->
+<script src="{% static 'js/chart.min.js' %}"></script>
+<style>
+    .super-admin-container {
+        max-width: 1400px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    .super-admin-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .super-admin-header h1 {
+        margin: 0;
+        font-size: 2rem;
+    }
+    
+    .super-admin-header p {
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-box {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    
+    .stat-box h3 {
+        font-size: 2.5rem;
+        margin: 0;
+        color: #667eea;
+    }
+    
+    .stat-box p {
+        margin: 0.5rem 0 0 0;
+        color: #64748b;
+        font-weight: 500;
+    }
+    
+    .charts-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .chart-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .chart-card h3 {
+        margin: 0 0 1rem 0;
+        color: #1f2937;
+    }
+    
+    .table-section {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .table-section h2 {
+        margin: 0 0 1rem 0;
+        color: #1f2937;
+    }
+    
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+    
+    .data-table th {
+        background: #f8fafc;
+        padding: 0.75rem;
+        text-align: left;
+        font-weight: 600;
+        color: #475569;
+        border-bottom: 2px solid #e2e8f0;
+    }
+    
+    .data-table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .data-table tr:hover {
+        background: #f8fafc;
+    }
+    
+    .role-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .role-user { background: #dbeafe; color: #1e40af; }
+    .role-admin { background: #fef3c7; color: #b45309; }
+    .role-superadmin { background: #f3e8ff; color: #7c3aed; }
+    
+    .status-active { color: #10b981; font-weight: 600; }
+    .status-inactive { color: #ef4444; font-weight: 600; }
+    
+    .action-btn {
+        padding: 0.25rem 0.75rem;
+        border: none;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        margin-right: 0.25rem;
+    }
+    
+    .btn-promote { background: #10b981; color: white; }
+    .btn-demote { background: #f59e0b; color: white; }
+    .btn-deactivate { background: #ef4444; color: white; }
+    .btn-activate { background: #3b82f6; color: white; }
+    
+    .leaderboard-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem;
+        border-bottom: 1px solid #e5e7eb;
+        align-items: center;
+    }
+    
+    .rank-badge {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .charts-section {
+            grid-template-columns: 1fr;
+        }
+        
+        .data-table {
+            font-size: 0.8rem;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="super-admin-container">
+    <!-- Header -->
+    <section class="super-admin-header">
+        <h1>🛡️ Super Admin Dashboard</h1>
+        <p>Complete system overview and user management</p>
+    </section>
+
+    <!-- Key Stats -->
+    <div class="stats-grid">
+        <div class="stat-box">
+            <h3>{{ total_users }}</h3>
+            <p>Total Users</p>
+        </div>
+        <div class="stat-box">
+            <h3>{{ user_count }}</h3>
+            <p>Regular Users</p>
+        </div>
+        <div class="stat-box">
+            <h3>{{ admin_count }}</h3>
+            <p>Admins</p>
+        </div>
+        <div class="stat-box">
+            <h3>{{ superadmin_count }}</h3>
+            <p>Super Admins</p>
+        </div>
+        <div class="stat-box">
+            <h3>{{ total_issues }}</h3>
+            <p>Total Issues</p>
+        </div>
+        <div class="stat-box">
+            <h3>{{ resolved_issues }}</h3>
+            <p>Resolved</p>
+        </div>
+        <div class="stat-box">
+            <h3>{{ pending_issues }}</h3>
+            <p>Pending</p>
+        </div>
+        <div class="stat-box">
+            <h3>{{ in_progress_issues }}</h3>
+            <p>In Progress</p>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-section">
+        <div class="chart-card">
+            <h3>📊 Issue Status Distribution</h3>
+            <canvas id="issueStatusChart" style="max-height: 250px;"></canvas>
+        </div>
+        
+        <div class="chart-card">
+            <h3>👥 User Roles Distribution</h3>
+            <canvas id="userRolesChart" style="max-height: 250px;"></canvas>
+        </div>
+        
+        <div class="chart-card">
+            <h3>📈 Weekly Registrations (8 Weeks)</h3>
+            <canvas id="weeklyRegistrationsChart" style="max-height: 250px;"></canvas>
+        </div>
+        
+        <div class="chart-card">
+            <h3>📊 Weekly Issues Trend</h3>
+            <canvas id="weeklyIssuesChart" style="max-height: 250px;"></canvas>
+        </div>
+        
+        <div class="chart-card">
+            <h3>📉 Daily Issues (Last 7 Days)</h3>
+            <canvas id="dailyIssuesChart" style="max-height: 250px;"></canvas>
+        </div>
+    </div>
+
+    <!-- Leaderboards -->
+    <div class="charts-section">
+        <div class="table-section">
+            <h2>🏆 Top Admins (Resolved Issues)</h2>
+            {% if top_admins %}
+                {% for admin in top_admins %}
+                <div class="leaderboard-item">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span class="rank-badge" style="background: {% if forloop.counter == 1 %}#fbbf24{% elif forloop.counter == 2 %}#9ca3af{% elif forloop.counter == 3 %}#cd7f32{% else %}#e5e7eb{% endif %};">{{ forloop.counter }}</span>
+                        <span style="font-weight: 500;">{{ admin.admin__profile__name }}</span>
+                    </div>
+                    <span class="role-badge" style="background: #10b981; color: white;">{{ admin.resolved_count }} resolved</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No data available</p>
+            {% endif %}
+        </div>
+        
+        <div class="table-section">
+            <h2>📝 Top Contributors (Reported Issues)</h2>
+            {% if top_reporters %}
+                {% for reporter in top_reporters %}
+                <div class="leaderboard-item">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span class="rank-badge" style="background: {% if forloop.counter == 1 %}#fbbf24{% elif forloop.counter == 2 %}#9ca3af{% elif forloop.counter == 3 %}#cd7f32{% else %}#e5e7eb{% endif %};">{{ forloop.counter }}</span>
+                        <span style="font-weight: 500;">{{ reporter.reported_by__profile__name }}</span>
+                    </div>
+                    <span class="role-badge" style="background: #3b82f6; color: white;">{{ reporter.issue_count }} issues</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No data available</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- User Management Table -->
+    <div class="table-section">
+        <h2>👥 User Management</h2>
+        <div style="overflow-x: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in all_users %}
+                    <tr>
+                        <td><strong>{{ user.profile.name }}</strong></td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            <span class="role-badge role-{{ user.profile.role }}">
+                                {{ user.profile.get_role_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if user.is_active %}
+                                <span class="status-active">✓ Active</span>
+                            {% else %}
+                                <span class="status-inactive">✗ Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.date_joined|date:"M d, Y" }}</td>
+                        <td>
+                            {% if user != request.user %}
+                                <form method="post" action="{% url 'promote_user' user.id %}" style="display: inline;" id="role-form-{{ user.id }}">
+                                    {% csrf_token %}
+                                    <select name="role" onchange="handleRoleChange(this, {{ user.id }})" class="action-btn">
+                                        <option value="">Change Role</option>
+                                        <option value="user">User</option>
+                                        <option value="admin">Admin</option>
+                                        <option value="superadmin">SuperAdmin</option>
+                                    </select>
+                                    <input type="hidden" name="superadmin_username" id="superadmin_username_{{ user.id }}" value="">
+                                </form>
+                                
+                                <form method="post" action="{% url 'deactivate_user' user.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="action-btn {% if user.is_active %}btn-deactivate{% else %}btn-activate{% endif %}">
+                                        {% if user.is_active %}Deactivate{% else %}Activate{% endif %}
+                                    </button>
+                                </form>
+                            {% else %}
+                                <span style="color: #94a3b8;">You</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Recent Issues Table -->
+    <div class="table-section">
+        <h2>📋 Recent Issues</h2>
+        <div style="overflow-x: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Reporter</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for issue in recent_issues %}
+                    <tr>
+                        <td><strong>{{ issue.title }}</strong></td>
+                        <td>{{ issue.reported_by.profile.name }}</td>
+                        <td><span class="role-badge role-user">{{ issue.category }}</span></td>
+                        <td><span class="role-badge role-admin">{{ issue.status }}</span></td>
+                        <td>{{ issue.created_at|date:"M d, Y" }}</td>
+                        <td><a href="{% url 'admin_issue_detail' issue.id %}" class="action-btn btn-promote">View</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Admin Activity Log -->
+    <div class="table-section">
+        <h2>📝 Admin Activity Log</h2>
+        <div style="overflow-x: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Admin</th>
+                        <th>Action</th>
+                        <th>Issue</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for activity in recent_activity %}
+                    <tr>
+                        <td><strong>{{ activity.admin.profile.name }}</strong></td>
+                        <td>{{ activity.action }}</td>
+                        <td>{{ activity.issue.title }}</td>
+                        <td>{{ activity.timestamp|date:"M d, Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Failed Login Attempts -->
+    {% if failed_logins %}
+    <div class="table-section">
+        <h2>🚨 Failed Login Attempts</h2>
+        <div style="overflow-x: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>IP Address</th>
+                        <th>Attempts</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attempt in failed_logins %}
+                    <tr>
+                        <td><strong>{{ attempt.username|default:"Unknown" }}</strong></td>
+                        <td>{{ attempt.ip_address }}</td>
+                        <td><span class="role-badge" style="background: #ef4444; color: white;">{{ attempt.failures_since_start }}</span></td>
+                        <td>{{ attempt.attempt_time|date:"M d, Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <script>
+    // Wait for DOM to be ready and Chart.js to be loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof Chart === 'undefined') {
+            console.error('Chart.js library not loaded!');
+            return;
+        }
+
+        // Issue Status Pie Chart
+        const statusCtx = document.getElementById('issueStatusChart');
+        if (statusCtx) {
+            new Chart(statusCtx.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending', 'In Progress', 'Resolved', 'Rejected'],
+                    datasets: [{
+                        data: [{{ pending_issues }}, {{ in_progress_issues }}, {{ resolved_issues }}, {{ rejected_issues }}],
+                        backgroundColor: ['#fbbf24', '#3b82f6', '#10b981', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // User Roles Pie Chart
+        const rolesCtx = document.getElementById('userRolesChart');
+        if (rolesCtx) {
+            new Chart(rolesCtx.getContext('2d'), {
+        type: 'pie',
+        data: {
+            labels: ['Users', 'Admins', 'Super Admins'],
+            datasets: [{
+                data: [{{ user_count }}, {{ admin_count }}, {{ superadmin_count }}],
+                backgroundColor: ['#3b82f6', '#f59e0b', '#8b5cf6'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                    position: 'bottom'
+                }
+            }
+        });
+        }
+
+        // Weekly Registrations Line Chart
+        const regCtx = document.getElementById('weeklyRegistrationsChart');
+        if (regCtx) {
+            new Chart(regCtx.getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: [{% for item in weekly_registrations %}'{{ item.week|date:"M d" }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+            datasets: [{
+                label: 'New Users',
+                data: [{% for item in weekly_registrations %}{{ item.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+                }
+            }
+        });
+        }
+
+        // Weekly Issues Line Chart
+        const weeklyIssuesCtx = document.getElementById('weeklyIssuesChart');
+        if (weeklyIssuesCtx) {
+            new Chart(weeklyIssuesCtx.getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: [{% for item in weekly_issues %}'{{ item.week|date:"M d" }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+            datasets: [{
+                label: 'Issues Reported',
+                data: [{% for item in weekly_issues %}{{ item.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+                }
+            }
+        });
+        }
+
+        // Daily Issues Bar Chart
+        const dailyCtx = document.getElementById('dailyIssuesChart');
+        if (dailyCtx) {
+            new Chart(dailyCtx.getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: [{% for item in daily_issues %}'{{ item.day|date:"D M d" }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+            datasets: [{
+                label: 'Issues',
+                data: [{% for item in daily_issues %}{{ item.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                backgroundColor: '#8b5cf6',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+        }
+    });
+
+    // Handle role change with username modal for superadmin
+    function handleRoleChange(selectElement, userId) {
+        if (selectElement.value === 'superadmin') {
+            // Show modal to get username
+            const username = prompt('Enter a unique username for this SuperAdmin:');
+            if (username && username.trim()) {
+                document.getElementById('superadmin_username_' + userId).value = username.trim();
+                document.getElementById('role-form-' + userId).submit();
+            } else {
+                selectElement.value = ''; // Reset the select
+                alert('Username is required to promote to SuperAdmin');
+            }
+        } else {
+            // Direct submit for other roles
+            document.getElementById('role-form-' + userId).submit();
+        }
+    }
+    </script>
+</main>
+{% endblock %}

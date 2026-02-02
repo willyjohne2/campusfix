@@ -7,13 +7,14 @@ from .models import ContactMessage, ContactReply
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ["name", "user", "is_verified", "created_at"]
-    list_filter = ["is_verified", "created_at"]
+    list_display = ["name", "user", "role", "is_verified", "created_at"]
+    list_filter = ["role", "is_verified", "created_at"]
     search_fields = ["name", "user__email"]
     readonly_fields = ["created_at", "updated_at"]
 
     fieldsets = (
         ("User Information", {"fields": ("user", "name")}),
+        ("Role & Access", {"fields": ("role",)}),
         ("Verification", {"fields": ("is_verified",)}),
         (
             "Timestamps",
@@ -35,32 +36,60 @@ def activate_users(modeladmin, request, queryset):
     queryset.update(is_active=True)
 
 
-@admin.action(description="Make selected users staff (Admin)")
-def make_staff(modeladmin, request, queryset):
-    queryset.update(is_staff=True)
+@admin.action(description="Assign Admin role to selected users")
+def set_admin_role(modeladmin, request, queryset):
+    # Update the related Profile records
+    from .models import Profile
+
+    Profile.objects.filter(user__in=queryset).update(role="admin")
 
 
-@admin.action(description="Revoke staff status for selected users")
-def remove_staff(modeladmin, request, queryset):
-    queryset.update(is_staff=False)
+@admin.action(description="Assign User role to selected users")
+def set_user_role(modeladmin, request, queryset):
+    # Update the related Profile records
+    from .models import Profile
+
+    Profile.objects.filter(user__in=queryset).update(role="user")
+
+
+@admin.action(description="Assign SuperAdmin role to selected users")
+def set_superadmin_role(modeladmin, request, queryset):
+    # Update the related Profile records
+    from .models import Profile
+
+    Profile.objects.filter(user__in=queryset).update(role="superadmin")
 
 
 class UserAdmin(DjangoUserAdmin):
     list_display = (
         "username",
         "email",
+        "get_user_role",
         "first_name",
         "last_name",
-        "is_staff",
-        "is_superuser",
         "is_active",
         "date_joined",
         "last_login",
     )
-    list_filter = ("is_staff", "is_superuser", "is_active", "date_joined")
+    list_filter = ("is_active", "date_joined", "profile__role")
     search_fields = ("username", "email", "first_name", "last_name")
     readonly_fields = ("date_joined", "last_login")
-    actions = [deactivate_users, activate_users, make_staff, remove_staff]
+    actions = [
+        deactivate_users,
+        activate_users,
+        set_user_role,
+        set_admin_role,
+        set_superadmin_role,
+    ]
+
+    def get_user_role(self, obj):
+        """Display the user's role from their profile"""
+        try:
+            return obj.profile.get_role_display()
+        except:
+            return "N/A"
+
+    get_user_role.short_description = "Role"
 
 
 # Unregister the default User admin and register our customized one
@@ -103,10 +132,10 @@ class ContactMessageAdmin(admin.ModelAdmin):
     def restore_messages(self, request, queryset):
         queryset.update(is_deleted=False, deleted_by=None)
 
-    @admin.action(description="Hard delete selected messages (superusers only)")
+    @admin.action(description="Hard delete selected messages (superadmins only)")
     def hard_delete_messages(self, request, queryset):
-        if not request.user.is_superuser:
-            self.message_user(request, "Only superusers can hard-delete messages.")
+        if not request.user.profile.is_superadmin():
+            self.message_user(request, "Only super admins can hard-delete messages.")
             return
         queryset.delete()
 
@@ -129,9 +158,9 @@ class ContactReplyAdmin(admin.ModelAdmin):
     def restore_replies(self, request, queryset):
         queryset.update(is_deleted=False, deleted_by=None)
 
-    @admin.action(description="Hard delete selected replies (superusers only)")
+    @admin.action(description="Hard delete selected replies (superadmins only)")
     def hard_delete_replies(self, request, queryset):
-        if not request.user.is_superuser:
-            self.message_user(request, "Only superusers can hard-delete replies.")
+        if not request.user.profile.is_superadmin():
+            self.message_user(request, "Only super admins can hard-delete replies.")
             return
         queryset.delete()

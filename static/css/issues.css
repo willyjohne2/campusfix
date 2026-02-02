@@ -524,3 +524,655 @@ textarea {
         font-size: 0.9rem;
     }
 }
+
+/* ========================================
+   ISSUE DETAIL PAGE STYLING
+======================================== */
+
+.dashboard-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Issue Detail Card */
+.issue-detail-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+/* Image at Top of Card */
+.issue-attachment-top {
+    margin: -2rem -2rem 2rem -2rem;
+    width: calc(100% + 4rem);
+    max-height: 300px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.issue-image-preview {
+    max-width: 100%;
+    max-height: 300px;
+    width: auto;
+    height: auto;
+    display: block;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    border-radius: 0;
+}
+
+.issue-image-preview:hover {
+    transform: scale(1.02);
+}
+
+/* Image Modal / Lightbox */
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.image-modal-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 2rem;
+}
+
+.image-modal-image {
+    max-width: 90vw;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.image-modal-close {
+    position: absolute;
+    top: 2rem;
+    right: 2.5rem;
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10000;
+    line-height: 1;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-modal-close:hover {
+    color: #f3f4f6;
+    transform: scale(1.2);
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.issue-header-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.issue-header-detail h3 {
+    font-size: 1.8rem;
+    color: #0f172a;
+    margin: 0;
+    flex: 1;
+    word-break: break-word;
+}
+
+.issue-status-pending {
+    background: #fef3c7 !important;
+    color: #92400e !important;
+}
+
+.issue-status-in\ progress {
+    background: #dbeafe !important;
+    color: #0c4a6e !important;
+}
+
+.issue-status-resolved {
+    background: #dcfce7 !important;
+    color: #15803d !important;
+}
+
+.issue-status-rejected {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+}
+
+/* Info Grid */
+.issue-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f9fafb;
+    border-radius: 10px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.info-item label {
+    font-weight: 600;
+    color: #2563eb;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.info-item span {
+    color: #1f2937;
+    font-size: 1rem;
+    word-break: break-word;
+}
+
+.priority-low {
+    color: #0c4a6e;
+    font-weight: 500;
+}
+
+.priority-medium {
+    color: #92400e;
+    font-weight: 500;
+}
+
+.priority-high {
+    color: #dc2626;
+    font-weight: 500;
+}
+
+.priority-critical {
+    color: #7f1d1d;
+    font-weight: 600;
+}
+
+/* Description Section */
+.issue-description {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f9fafb;
+    border-radius: 10px;
+    border-left: 4px solid #2563eb;
+}
+
+.issue-description label {
+    display: block;
+    font-weight: 600;
+    color: #2563eb;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.issue-description p {
+    color: #374151;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Attachment Section */
+.issue-attachment {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f9fafb;
+    border-radius: 10px;
+}
+
+.issue-attachment label {
+    display: block;
+    font-weight: 600;
+    color: #2563eb;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.issue-attachment img {
+    max-width: 100%;
+    max-height: 400px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: block;
+}
+
+/* Admin Notes */
+.admin-notes {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #fef3c7;
+    border-radius: 10px;
+    border-left: 4px solid #f59e0b;
+}
+
+.admin-notes label {
+    display: block;
+    font-weight: 600;
+    color: #92400e;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.admin-notes p {
+    color: #78350f;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Admin Section */
+.admin-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #dbeafe;
+    border-radius: 10px;
+    border-left: 4px solid #0284c7;
+}
+
+.admin-section h4 {
+    color: #0c4a6e;
+    margin: 0 0 1rem 0;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.btn-primary,
+.btn-danger {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+/* Comments Section */
+.comments-section {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e5e7eb;
+}
+
+.comments-section h3 {
+    font-size: 1.3rem;
+    color: #0f172a;
+    margin: 0 0 1.5rem 0;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.comment-form {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f9fafb;
+    border-radius: 10px;
+}
+
+.comment-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.comment-form label {
+    font-weight: 600;
+    color: #2563eb;
+    font-size: 0.9rem;
+}
+
+.comment-form textarea {
+    padding: 0.75rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.comment-form textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 8px rgba(37, 99, 235, 0.2);
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.comment {
+    padding: 1.25rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 3px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.comment:hover {
+    border-left-color: #2563eb;
+    background: #f0f9ff;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.comment-header strong {
+    color: #1f2937;
+    font-size: 0.95rem;
+}
+
+.comment-date {
+    color: #9ca3af;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.comment p {
+    color: #374151;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Navigation Buttons */
+.navigation-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-top: 1.5rem;
+}
+
+.navigation-buttons a {
+    padding: 0.75rem 1.5rem;
+    background: #0f172a;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-align: center;
+    flex: 1;
+    min-width: 150px;
+}
+
+.navigation-buttons a:hover {
+    background: #1e293b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.3);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN - DETAIL PAGE
+======================================== */
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .issue-detail-card,
+    .comments-section {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .issue-attachment-top {
+        margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+        width: calc(100% + 3rem);
+        max-height: 280px;
+    }
+
+    .image-modal-close {
+        top: 1.5rem;
+        right: 1.5rem;
+        font-size: 2rem;
+        width: 45px;
+        height: 45px;
+    }
+
+    .image-header-detail {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+    }
+
+    .issue-header-detail h3 {
+        font-size: 1.4rem;
+        width: 100%;
+    }
+
+    .issue-header-detail .issue-badge {
+        align-self: flex-start;
+    }
+
+    .issue-info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .issue-attachment img {
+        max-height: 300px;
+    }
+
+    .comment-form {
+        padding: 1rem;
+    }
+
+    .navigation-buttons {
+        flex-direction: column;
+    }
+
+    .navigation-buttons a {
+        flex: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-container {
+        padding: 1rem;
+    }
+
+    .issue-detail-card,
+    .comments-section {
+        padding: 1rem;
+        border-radius: 10px;
+    }
+
+    .issue-attachment-top {
+        margin: -1rem -1rem 1rem -1rem;
+        width: calc(100% + 2rem);
+        max-height: 300px;
+    }
+
+    .image-modal-close {
+        top: 1rem;
+        right: 1rem;
+        font-size: 1.5rem;
+        width: 40px;
+        height: 40px;
+    }
+
+    .image-modal-content {
+        padding: 1rem;
+    }
+
+    .image-modal-image {
+        max-width: 95vw;
+        max-height: 85vh;
+    }
+
+    .issue-header-detail h3 {
+        font-size: 1.2rem;
+    }
+
+    .issue-header-detail .issue-badge {
+        padding: 0.4rem 0.7rem;
+        font-size: 0.7rem;
+    }
+
+    .issue-info-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+
+    .info-item label {
+        font-size: 0.8rem;
+    }
+
+    .info-item span {
+        font-size: 0.9rem;
+    }
+
+    .issue-description,
+    .issue-attachment,
+    .admin-notes,
+    .admin-section {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .issue-attachment img {
+        max-height: 250px;
+    }
+
+    .comments-section h3 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    .comment {
+        padding: 1rem;
+        gap: 0.75rem;
+    }
+
+    .comment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+    }
+
+    .comment-date {
+        font-size: 0.75rem;
+    }
+
+    .navigation-buttons {
+        gap: 0.75rem;
+        flex-direction: column;
+    }
+
+    .navigation-buttons a {
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+        min-width: unset;
+    }
+
+    .btn-primary,
+    .btn-danger {
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .action-buttons a {
+        width: 100%;
+        text-align: center;
+    }
+}

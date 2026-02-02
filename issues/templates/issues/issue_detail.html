@@ -37,7 +37,15 @@
       </div>
       <div class="info-item">
         <label>Reported By</label>
-        <span>{{ issue.reported_by.profile.name }}</span>
+        <span>
+          {% if user == issue.reported_by %}
+            You ({{ issue.anonymous_code }})
+          {% elif user.profile.is_superadmin %}
+            {{ issue.reported_by.profile.name }} ({{ issue.anonymous_code }})
+          {% else %}
+            {{ issue.anonymous_code }}
+          {% endif %}
+        </span>
       </div>
       <div class="info-item">
         <label>Reported Date</label>
@@ -53,7 +61,7 @@
     {% if issue.attachment %}
       <div class="issue-attachment">
         <label><strong>Attachment</strong></label>
-        <img src="{{ issue.attachment.url }}" alt="Issue attachment" style="max-width: 100%; height: auto; border-radius: 8px;">
+        <img src="{{ issue.attachment.url }}" alt="Issue attachment" class="issue-image-preview" onclick="openImageModal('{{ issue.attachment.url }}')">
       </div>
     {% endif %}
 
@@ -65,7 +73,7 @@
     {% endif %}
 
     <!-- Admin Update Section -->
-    {% if user.is_staff %}
+    {% if user.profile.is_admin %}
       <div class="admin-section">
         <h4>Admin Actions</h4>
         <a href="{% url 'update_issue_status' issue.id %}" class="btn-primary">Update Status</a>
@@ -106,7 +114,17 @@
         {% for comment in comments %}
           <div class="comment">
             <div class="comment-header">
-              <strong>{{ comment.author.profile.name }}</strong>
+              <strong>
+                {% if user == comment.author %}
+                  You
+                {% elif comment.author.profile.is_admin %}
+                  Admin
+                {% elif user.profile.is_superadmin %}
+                  {{ comment.author.profile.name }}
+                {% else %}
+                  User
+                {% endif %}
+              </strong>
               <span class="comment-date">{{ comment.created_at|date:"M d, Y H:i" }}</span>
             </div>
             <p>{{ comment.content }}</p>
@@ -124,5 +142,36 @@
     <a href="{% url 'my_issues' %}" class="btn-secondary">My Issues</a>
     <a href="{% url 'dashboard_home' %}" class="btn-secondary">Dashboard →</a>
   </div>
+
+  <!-- Image Modal Lightbox -->
+  <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+    <div class="image-modal-content" onclick="event.stopPropagation()">
+      <span class="image-modal-close" onclick="closeImageModal()">&times;</span>
+      <img id="modalImage" src="" alt="Issue attachment full view" class="image-modal-image">
+    </div>
+  </div>
+
+  <script>
+    function openImageModal(imageSrc) {
+      const modal = document.getElementById('imageModal');
+      const modalImg = document.getElementById('modalImage');
+      modalImg.src = imageSrc;
+      modal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageModal() {
+      const modal = document.getElementById('imageModal');
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    // Close modal when ESC key is pressed
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        closeImageModal();
+      }
+    });
+  </script>
 </main>
 {% endblock %}

@@ -15,15 +15,30 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
 from django.urls import path, include
-from django.views.generic.base import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
+from django.http import HttpResponse
 from . import views
 
+
+def robots_txt(request):
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /admin/",
+        "Disallow: /accounts/login/",
+        "Disallow: /accounts/register/",
+        "Disallow: /dashboard/",
+        "Disallow: /media/",
+        "",
+        "Sitemap: {}/sitemap.xml".format(request.build_absolute_uri("/")[:-1]),
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")
+
+
 urlpatterns = [
-    path("admin/", admin.site.urls),
     path("", views.homepage, name="home"),
     path("about/", views.about_page, name="about"),
     path("help/", views.help_page, name="help"),
@@ -33,10 +48,14 @@ urlpatterns = [
     path("issues/", include("issues.urls")),
     path("accounts/", include("accounts.urls")),
     path("admin-dashboard/", include("admin_dashboard.urls")),
-    # Use Django's built-in admin site for Super Admins (restricted via campusFix.admin)
-    # Keep `/admin/` as the canonical admin URL and redirect `/super-admin/` to it
-    path("super-admin/", RedirectView.as_view(url="/admin/", permanent=False)),
-    path("grappelli/", include("grappelli.urls")),  # Grappelli admin interface
+    # SEO files
+    path("robots.txt", robots_txt),
+    path(
+        "sitemap.xml",
+        TemplateView.as_view(
+            template_name="sitemap.xml", content_type="application/xml"
+        ),
+    ),
 ]
 
 # Serve media files in development

@@ -85,6 +85,31 @@ class LoginForm(AuthenticationForm):
         return email
 
 
+class SuperAdminLoginForm(forms.Form):
+    """
+    Super Admin login form - fields: username and password only
+    For exclusive superadmin access without email
+    """
+
+    username = forms.CharField(
+        max_length=150,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Enter your username",
+                "class": "form-control",
+                "autofocus": True,
+            }
+        ),
+        label="Username",
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={"placeholder": "Enter your password", "class": "form-control"}
+        ),
+        label="Password",
+    )
+
+
 class PasswordResetForm(DjangoPasswordResetForm):
     """
     Custom password reset form extending Django's PasswordResetForm

@@ -5,6 +5,7 @@ from .views import login_redirect
 urlpatterns = [
     path("register/", views.register, name="register"),
     path("login/", views.login_view, name="login"),
+    path("superadmin-login/", views.superadmin_login, name="superadmin_login"),
     path("logout/", views.logout_view, name="logout"),
     path("password_reset/", views.password_reset_request, name="password_reset"),
     path("password_reset/code/", views.password_reset_code, name="password_reset_code"),

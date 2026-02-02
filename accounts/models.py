@@ -4,6 +4,37 @@ from django.utils import timezone
 import random
 import string
 from django.conf import settings
+from django.core.exceptions import ValidationError
+
+
+class SuperAdmin(models.Model):
+    """
+    Separate SuperAdmin model for superadmin-only login (username/password)
+    Linked to User model via optional ForeignKey
+    Allows superadmins to login via username instead of email
+    """
+
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="superadmin", null=True, blank=True
+    )
+    username = models.CharField(max_length=150, unique=True, db_index=True)
+    password_hash = models.CharField(max_length=255)  # Stores Django password hash
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Super Administrator"
+        verbose_name_plural = "Super Administrators"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.username} (SuperAdmin)"
+
+    def clean(self):
+        """Validate that username is not empty"""
+        if not self.username or not self.username.strip():
+            raise ValidationError("Username cannot be empty")
 
 
 class Profile(models.Model):
@@ -12,15 +43,36 @@ class Profile(models.Model):
     aligned with registration form fields (name, email)
     """
 
+    ROLE_CHOICES = [
+        ("user", "Regular User"),
+        ("admin", "Administrator"),
+        ("superadmin", "Super Administrator"),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     name = models.CharField(max_length=150)  # Display name from registration form
     is_verified = models.BooleanField(default=False)  # Email verification status
+    role = models.CharField(
+        max_length=20, choices=ROLE_CHOICES, default="user"
+    )  # User role: user, admin, or superadmin
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         """Return the display name or fallback to email"""
         return self.name if self.name else self.user.email
+
+    def is_admin(self):
+        """Check if user is admin or superadmin"""
+        return self.role in ["admin", "superadmin"]
+
+    def is_superadmin(self):
+        """Check if user is superadmin"""
+        return self.role == "superadmin"
+
+    def is_regular_user(self):
+        """Check if user is regular user"""
+        return self.role == "user"
 
     class Meta:
         verbose_name = "User Profile"

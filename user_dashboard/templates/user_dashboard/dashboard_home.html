@@ -22,6 +22,18 @@
                 <p class="greeting-label">Welcome back</p>
                 <h1 class="user-name">{{ request.user.first_name|default:request.user.username }}</h1>
                 <p class="user-email">{{ request.user.email }}</p>
+                
+                {% if badge %}
+                <div class="user-badge" style="display: inline-block; margin-top: 0.5rem; padding: 0.5rem 1rem; background: {{ badge_color }}; color: white; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">
+                    {{ badge }}
+                </div>
+                {% endif %}
+                
+                {% if user_rank %}
+                <p style="margin-top: 0.5rem; color: #64748b; font-size: 0.9rem;">
+                    🏅 Rank #{{ user_rank }} of {{ total_contributors }} contributors
+                </p>
+                {% endif %}
             </div>
         </div>
     </section>

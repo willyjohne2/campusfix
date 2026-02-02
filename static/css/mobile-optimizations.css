@@ -1,0 +1,125 @@
+/* Mobile-specific optimizations */
+
+/* Improve tap targets for mobile (minimum 44x44px for accessibility) */
+@media (max-width: 768px) {
+    /* Better touch targets for buttons */
+    button, .btn, input[type="submit"], input[type="button"], a.button {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 0.75rem 1.25rem;
+        touch-action: manipulation; /* Prevent double-tap zoom */
+    }
+    
+    /* Ensure links are easy to tap */
+    a {
+        padding: 0.25rem 0;
+        display: inline-block;
+    }
+    
+    /* Better form inputs */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="number"],
+    input[type="search"],
+    select,
+    textarea {
+        min-height: 44px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 0.75rem;
+    }
+    
+    /* Prevent horizontal scroll */
+    body {
+        overflow-x: hidden;
+    }
+    
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    /* Better spacing on mobile */
+    .container,
+    .content-wrapper,
+    .page-content {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    /* Improve table readability */
+    table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Stack flex items on mobile */
+    .flex-row-desktop {
+        flex-direction: column;
+    }
+}
+
+/* Extra small phones */
+@media (max-width: 375px) {
+    /* Reduce font sizes slightly for very small screens */
+    body {
+        font-size: 14px;
+    }
+    
+    h1 {
+        font-size: 1.75rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    /* Tighter spacing */
+    .container,
+    .content-wrapper {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+}
+
+/* Landscape mode optimizations */
+@media (max-height: 500px) and (orientation: landscape) {
+    /* Reduce vertical padding in landscape */
+    header,
+    footer {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+    
+    .logo {
+        font-size: 1.5rem !important;
+    }
+}
+
+/* High DPI / Retina displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Ensure images look sharp on retina screens */
+    img {
+        image-rendering: -webkit-optimize-contrast;
+    }
+}
+
+/* Dark mode support (if user prefers) */
+@media (prefers-color-scheme: dark) {
+    /* Adjust colors for better contrast in dark mode */
+    body {
+        background-color: #1a1a1a;
+        color: #e5e7eb;
+    }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

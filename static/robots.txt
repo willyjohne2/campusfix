@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /accounts/login/
+Disallow: /accounts/register/
+Disallow: /dashboard/
+Disallow: /media/
+
+Sitemap: /sitemap.xml
+
+# Allow important pages
+Allow: /
+Allow: /about/
+Allow: /contact/
+Allow: /help/
+Allow: /issues/
+
+# Crawl delay (optional - 1 second between requests)
+Crawl-delay: 1

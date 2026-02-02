@@ -6,24 +6,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     {% block title %}
-    <title>CampusFix</title>
+    <title>CampusFix - Campus Issue Reporting System</title>
     {% endblock %}
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="CampusFix - Report and track campus issues efficiently. A modern issue reporting system for students and administrators to resolve campus problems quickly.">
+    <meta name="keywords" content="campus issues, issue reporting, campus management, student services, facility management, campus fix, report problems">
+    <meta name="author" content="CampusFix Team">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="CampusFix - Campus Issue Reporting System">
+    <meta property="og:description" content="Report and track campus issues efficiently. A modern platform for students and administrators.">
+    <meta property="og:image" content="{% static 'images/favicon.svg' %}">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.build_absolute_uri }}">
+    <meta property="twitter:title" content="CampusFix - Campus Issue Reporting System">
+    <meta property="twitter:description" content="Report and track campus issues efficiently. A modern platform for students and administrators.">
+    <meta property="twitter:image" content="{% static 'images/favicon.svg' %}">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+    <link rel="alternate icon" href="{% static 'images/favicon.svg' %}" type="image/svg+xml">
    
-    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="preload" href="{% static 'css/header.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="{% static 'css/header.css' %}"></noscript>
+    
+    <!-- Mobile optimizations -->
+    <link rel="stylesheet" href="{% static 'css/mobile-optimizations.css' %}">
+    
+    <!-- Preload critical pages for fast navigation -->
+    <link rel="prefetch" href="{% url 'about' %}">
+    <link rel="prefetch" href="{% url 'contact' %}">
+    <link rel="prefetch" href="{% url 'help' %}">
+    
     {% block css %}{% endblock %}
 </head>
-<body>
+<body style="opacity: 0;">
 
 <div class="page-wrapper">
 
 <header class="site-header">
-    <h1 class="logo">CampusFix</h1>
+    <h1 class="logo">
+        <i class="fas fa-tools"></i>
+        CampusFix
+    </h1>
 
     <button class="hamburger" id="hamburger-btn" aria-label="Toggle navigation">
         ☰
@@ -35,10 +75,12 @@
             <ul>
                 <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'report_issue' %}" class="nav-link">Report Issue</a></li>
-                    {% if user.is_staff %}
+                    {% if user.profile.is_superadmin %}
+                        <li><a href="{% url 'super_admin_dashboard' %}" class="nav-link">🛡️ Super Admin</a></li>
+                    {% elif user.profile.is_admin %}
                         <li><a href="{% url 'admin_dashboard_overview' %}" class="nav-link">👨‍💼 Admin Dashboard</a></li>
                     {% else %}
+                        <li><a href="{% url 'report_issue' %}" class="nav-link">Report Issue</a></li>
                         <li><a href="{% url 'dashboard_home' %}" class="nav-link">Dashboard</a></li>
                     {% endif %}
                     <li><a href="{% url 'logout' %}" class="nav-link">Logout</a></li>
@@ -54,10 +96,12 @@
         <ul>
             <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
             {% if user.is_authenticated %}
-                <li><a href="{% url 'report_issue' %}" class="nav-link">Report Issue</a></li>
-                {% if user.is_staff %}
+                {% if user.profile.is_superadmin %}
+                    <li><a href="{% url 'super_admin_dashboard' %}" class="nav-link">🛡️ Super Admin</a></li>
+                {% elif user.profile.is_admin %}
                     <li><a href="{% url 'admin_dashboard_overview' %}" class="nav-link">👨‍💼 Admin Dashboard</a></li>
                 {% else %}
+                    <li><a href="{% url 'report_issue' %}" class="nav-link">Report Issue</a></li>
                     <li><a href="{% url 'dashboard_home' %}" class="nav-link">Dashboard</a></li>
                 {% endif %}
                 <li><a href="{% url 'logout' %}" class="nav-link">Logout</a></li>
@@ -75,15 +119,25 @@
 
 <section class="cta-section">
     {% if user.is_authenticated %}
-       
-        <h3>Have an issue to report?</h3>
-        <p>
-            Help improve campus life by reporting issues anonymously. Your feedback makes a difference.
-        </p>
-        <div class="cta-buttons">
-            <a href="{% url 'report_issue' %}" class="btn-primary">📝 Report New Issue</a>
-            <a href="{% url 'dashboard_home' %}" class="btn-secondary">📊 View My Issues</a>
-        </div>
+        {% if user.profile.is_admin %}
+            <h3>Manage Campus Issues</h3>
+            <p>
+                Review and resolve reported issues to improve campus life for everyone.
+            </p>
+            <div class="cta-buttons">
+                <a href="{% url 'admin_dashboard_overview' %}" class="btn-primary">👨‍💼 Admin Dashboard</a>
+                <a href="{% url 'issue_list' %}" class="btn-secondary">📋 View All Issues</a>
+            </div>
+        {% else %}
+            <h3>Have an issue to report?</h3>
+            <p>
+                Help improve campus life by reporting issues anonymously. Your feedback makes a difference.
+            </p>
+            <div class="cta-buttons">
+                <a href="{% url 'report_issue' %}" class="btn-primary">📝 Report New Issue</a>
+                <a href="{% url 'dashboard_home' %}" class="btn-secondary">📊 View My Issues</a>
+            </div>
+        {% endif %}
     {% else %}
         <h3>See something that needs fixing?</h3>
         <p>
@@ -154,6 +208,9 @@ overlay.addEventListener("click", (e) => {
     }
 });
 </script>
+
+<!-- Fast Navigation Script -->
+<script src="{% static 'js/fast-navigation.js' %}"></script>
 
 {% block js %}{% endblock %}
 </body>

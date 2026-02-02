@@ -18,6 +18,9 @@
             <p class="header-subtitle">Manage and resolve campus issues</p>
         </div>
         <div class="header-actions">
+            {% if user.profile.is_superadmin %}
+                <a href="{% url 'super_admin_dashboard' %}" class="btn-primary">🛡️ Super Admin</a>
+            {% endif %}
             <a href="{% url 'admin_issue_list' %}" class="btn-primary">View All Issues</a>
             <a href="{% url 'admin_activity_log' %}" class="btn-secondary">Activity Log</a>
         </div>
@@ -79,7 +82,13 @@
                             <td><span class="badge category">{{ issue.category }}</span></td>
                             <td><span class="badge priority-{{ issue.priority|lower }}">{{ issue.priority }}</span></td>
                             <td><span class="badge status-{{ issue.status|lower|slugify }}">{{ issue.status }}</span></td>
-                            <td>{{ issue.reported_by.first_name|default:issue.reported_by.username }}</td>
+                            <td>
+                              {% if user.profile.is_superadmin %}
+                                {{ issue.reported_by.profile.name }}
+                              {% else %}
+                                {{ issue.anonymous_code }}
+                              {% endif %}
+                            </td>
                             <td>{{ issue.created_at|date:"M d, Y" }}</td>
                             <td><a href="{% url 'admin_issue_detail' issue.id %}" class="btn-link">View</a></td>
                         </tr>
@@ -153,5 +162,231 @@
     </section>
     {% endif %}
 
+    <!-- Analytics Section (SuperAdmin Only) -->
+    {% if user.profile.is_superadmin %}
+    <section class="analytics-section" style="margin-top: 2rem;">
+        <h2>📊 Platform Analytics</h2>
+        
+        <!-- Charts Row -->
+        <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+            
+            <!-- Issue Status Distribution -->
+            <div class="chart-card" style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <h3 style="margin-bottom: 1rem; color: #1f2937;">Issue Status Distribution</h3>
+                <canvas id="issueStatusChart" style="max-height: 250px;"></canvas>
+            </div>
+
+            <!-- Weekly Registrations -->
+            <div class="chart-card" style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <h3 style="margin-bottom: 1rem; color: #1f2937;">Weekly Registrations (8 Weeks)</h3>
+                <canvas id="weeklyRegistrationsChart" style="max-height: 250px;"></canvas>
+            </div>
+
+            <!-- Weekly Issues Trend -->
+            <div class="chart-card" style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <h3 style="margin-bottom: 1rem; color: #1f2937;">Weekly Issues Trend</h3>
+                <canvas id="weeklyIssuesChart" style="max-height: 250px;"></canvas>
+            </div>
+
+            <!-- Daily Issues (Last 7 Days) -->
+            <div class="chart-card" style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <h3 style="margin-bottom: 1rem; color: #1f2937;">Daily Issues (Last 7 Days)</h3>
+                <canvas id="dailyIssuesChart" style="max-height: 250px;"></canvas>
+            </div>
+        </div>
+
+        <!-- Leaderboards -->
+        <div class="leaderboards-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+            
+            <!-- Top Admins -->
+            {% if top_admins %}
+            <div class="leaderboard-card" style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <h3 style="margin-bottom: 1rem; color: #1f2937;">🏆 Top Admins (Resolved Issues)</h3>
+                <div class="leaderboard-list">
+                    {% for admin in top_admins %}
+                    <div class="leaderboard-item" style="display: flex; justify-content: space-between; padding: 0.75rem; border-bottom: 1px solid #e5e7eb; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span class="rank-badge" style="background: {% if forloop.counter == 1 %}#fbbf24{% elif forloop.counter == 2 %}#9ca3af{% elif forloop.counter == 3 %}#cd7f32{% else %}#e5e7eb{% endif %}; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold;">{{ forloop.counter }}</span>
+                            <span style="font-weight: 500;">{{ admin.admin__profile__name }}</span>
+                        </div>
+                        <span class="badge" style="background: #10b981; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem;">{{ admin.resolved_count }} resolved</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Top Reporters -->
+            {% if top_reporters %}
+            <div class="leaderboard-card" style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <h3 style="margin-bottom: 1rem; color: #1f2937;">📝 Top Contributors (Reported Issues)</h3>
+                <div class="leaderboard-list">
+                    {% for reporter in top_reporters %}
+                    <div class="leaderboard-item" style="display: flex; justify-content: space-between; padding: 0.75rem; border-bottom: 1px solid #e5e7eb; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span class="rank-badge" style="background: {% if forloop.counter == 1 %}#fbbf24{% elif forloop.counter == 2 %}#9ca3af{% elif forloop.counter == 3 %}#cd7f32{% else %}#e5e7eb{% endif %}; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold;">{{ forloop.counter }}</span>
+                            <span style="font-weight: 500;">{{ reporter.reported_by__profile__name }}</span>
+                        </div>
+                        <span class="badge" style="background: #3b82f6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem;">{{ reporter.issue_count }} issues</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Key Stats Summary -->
+        <div class="stats-summary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
+            <div style="background: #eff6ff; padding: 1rem; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; font-weight: bold; color: #1e40af;">{{ total_users }}</div>
+                <div style="color: #64748b; margin-top: 0.25rem;">Total Users</div>
+            </div>
+            <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; font-weight: bold; color: #b45309;">{{ pending_issues }}</div>
+                <div style="color: #64748b; margin-top: 0.25rem;">Pending Issues</div>
+            </div>
+            <div style="background: #dbeafe; padding: 1rem; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; font-weight: bold; color: #1e3a8a;">{{ in_progress_issues }}</div>
+                <div style="color: #64748b; margin-top: 0.25rem;">In Progress</div>
+            </div>
+            <div style="background: #d1fae5; padding: 1rem; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; font-weight: bold; color: #047857;">{{ resolved_issues }}</div>
+                <div style="color: #64748b; margin-top: 0.25rem;">Resolved</div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
 </main>
+
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+{% if user.profile.is_superadmin %}
+<script>
+// Issue Status Pie Chart
+const statusCtx = document.getElementById('issueStatusChart').getContext('2d');
+new Chart(statusCtx, {
+    type: 'pie',
+    data: {
+        labels: ['Pending', 'In Progress', 'Resolved', 'Rejected'],
+        datasets: [{
+            data: [{{ pending_issues }}, {{ in_progress_issues }}, {{ resolved_issues }}, {{ rejected_issues }}],
+            backgroundColor: ['#fbbf24', '#3b82f6', '#10b981', '#ef4444'],
+            borderWidth: 2,
+            borderColor: '#fff'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+// Weekly Registrations Line Chart
+const regCtx = document.getElementById('weeklyRegistrationsChart').getContext('2d');
+new Chart(regCtx, {
+    type: 'line',
+    data: {
+        labels: [{% for item in weekly_registrations %}'{{ item.week|date:"M d" }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            label: 'New Users',
+            data: [{% for item in weekly_registrations %}{{ item.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+});
+
+// Weekly Issues Line Chart
+const weeklyIssuesCtx = document.getElementById('weeklyIssuesChart').getContext('2d');
+new Chart(weeklyIssuesCtx, {
+    type: 'line',
+    data: {
+        labels: [{% for item in weekly_issues %}'{{ item.week|date:"M d" }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Issues Reported',
+            data: [{% for item in weekly_issues %}{{ item.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+});
+
+// Daily Issues Bar Chart
+const dailyCtx = document.getElementById('dailyIssuesChart').getContext('2d');
+new Chart(dailyCtx, {
+    type: 'bar',
+    data: {
+        labels: [{% for item in daily_issues %}'{{ item.day|date:"D M d" }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Issues',
+            data: [{% for item in daily_issues %}{{ item.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+            backgroundColor: '#8b5cf6',
+            borderRadius: 4
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+});
+</script>
+{% endif %}
 {% endblock %}

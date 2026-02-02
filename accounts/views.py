@@ -5,6 +5,7 @@ from django.contrib.auth.views import (
     PasswordResetCompleteView as DjangoPasswordResetCompleteView,
 )
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 try:
     from django_ratelimit.decorators import ratelimit
@@ -14,8 +15,14 @@ except Exception:
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
 from django.views import View
-from .forms import RegistrationForm, LoginForm, PasswordResetForm, PasswordResetCodeForm
-from .models import Profile
+from .forms import (
+    RegistrationForm,
+    LoginForm,
+    PasswordResetForm,
+    PasswordResetCodeForm,
+    SuperAdminLoginForm,
+)
+from .models import Profile, SuperAdmin
 from .forms import EmailVerificationForm
 from .models import EmailVerification
 from django.utils import timezone
@@ -28,8 +35,10 @@ from .forms import ReplyForm
 from .models import ContactMessage, ContactReply
 from .email_utils import send_reply_email
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.hashers import check_password
 
 
+@ensure_csrf_cookie
 def register(request):
     """
     User registration view
@@ -37,6 +46,9 @@ def register(request):
     Creates user and associated profile
     """
     if request.user.is_authenticated:
+        # Redirect based on role
+        if request.user.profile.is_admin():
+            return redirect("admin_dashboard_overview")
         return redirect("dashboard_home")
 
     if request.method == "POST":
@@ -74,6 +86,7 @@ def register(request):
     return render(request, "accounts/register.html", {"form": form})
 
 
+@ensure_csrf_cookie
 @ratelimit(key="ip", rate="10/m", block=True)
 def login_view(request):
     """
@@ -82,6 +95,9 @@ def login_view(request):
     Supports "Remember Me" checkbox to extend session timeout
     """
     if request.user.is_authenticated:
+        # Redirect based on role
+        if request.user.profile.is_admin():
+            return redirect("admin_dashboard_overview")
         return redirect("dashboard_home")
 
     if request.method == "POST":
@@ -132,25 +148,83 @@ def login_view(request):
 
             login(request, user)
 
-            # Handle "Remember Me" - extend session to 30 days
+            # Handle "Remember Me" - extend session to 5 days
             if remember_me:
-                request.session.set_expiry(30 * 24 * 60 * 60)  # 30 days in seconds
+                request.session.set_expiry(5 * 24 * 60 * 60)  # 5 days in seconds
             else:
                 request.session.set_expiry(0)  # Session expires when browser closes
 
             messages.success(request, f"Welcome back, {user.profile.name}!")
+
             # Redirect based on user role
-            try:
-                admin_group = Group.objects.get(name="Admins")
-                if admin_group in user.groups.all():
-                    return redirect("admin_dashboard_overview")
-            except Group.DoesNotExist:
-                pass
-            return redirect("dashboard_home")
+            if user.profile.is_admin():
+                return redirect("admin_dashboard_overview")
+            else:
+                return redirect("dashboard_home")
         else:
             messages.error(request, "Invalid email or password. Please try again.")
 
     return render(request, "accounts/login.html")
+
+
+def superadmin_login(request):
+    """
+    SuperAdmin-only login view
+    Authenticates using username and password only (no email required)
+    Exclusive to SuperAdmin users
+    """
+    if request.user.is_authenticated:
+        # Redirect based on role
+        if request.user.profile.is_superadmin():
+            return redirect("super_admin_dashboard")
+        return redirect("dashboard_home")
+
+    if request.method == "POST":
+        form = SuperAdminLoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"].strip()
+            password = form.cleaned_data["password"].strip()
+
+            # Check if superadmin exists in SuperAdmin table
+            try:
+                superadmin = SuperAdmin.objects.get(username=username, is_active=True)
+            except SuperAdmin.DoesNotExist:
+                messages.error(request, "Invalid username or password.")
+                return render(request, "accounts/superadmin_login.html", {"form": form})
+
+            # Verify password using Django's password hasher
+            if check_password(password, superadmin.password_hash):
+                # If linked to user account, login that user
+                if superadmin.user:
+                    # Specify backend explicitly for multiple auth backends
+                    login(
+                        request,
+                        superadmin.user,
+                        backend="django.contrib.auth.backends.ModelBackend",
+                    )
+                    messages.success(
+                        request,
+                        f"Welcome Super Admin, {superadmin.username}!",
+                    )
+                    return redirect("super_admin_dashboard")
+                else:
+                    messages.error(
+                        request,
+                        "SuperAdmin account is not properly linked to user account.",
+                    )
+                    return render(
+                        request, "accounts/superadmin_login.html", {"form": form}
+                    )
+            else:
+                messages.error(request, "Invalid username or password.")
+                return render(request, "accounts/superadmin_login.html", {"form": form})
+        else:
+            messages.error(request, "Please provide both username and password.")
+            return render(request, "accounts/superadmin_login.html", {"form": form})
+    else:
+        form = SuperAdminLoginForm()
+
+    return render(request, "accounts/superadmin_login.html", {"form": form})
 
 
 def verify_email(request):

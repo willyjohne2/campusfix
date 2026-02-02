@@ -42,17 +42,17 @@ class ReportIssueForm(forms.ModelForm):
         }
 
     def clean_title(self):
-        """Validate title - minimum 5 characters"""
+        """Validate title - minimum 3 characters"""
         title = self.cleaned_data.get("title", "").strip()
-        if len(title) < 5:
-            raise ValidationError("Title must be at least 5 characters long.")
+        if len(title) < 3:
+            raise ValidationError("Title must be at least 3 characters long.")
         return title
 
     def clean_description(self):
-        """Validate description - minimum 10 characters"""
+        """Validate description - minimum 5 characters"""
         description = self.cleaned_data.get("description", "").strip()
-        if len(description) < 10:
-            raise ValidationError("Description must be at least 10 characters long.")
+        if len(description) < 5:
+            raise ValidationError("Description must be at least 5 characters long.")
         return description
 
     def clean_attachment(self):

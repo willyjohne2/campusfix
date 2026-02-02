@@ -29,9 +29,19 @@ html, body {
 }
 
 .logo {
-    font-family: Lobster, cursive;
+    font-family: 'Poppins', 'Segoe UI', Roboto, sans-serif;
     font-size: 2.2rem;
+    font-weight: 700;
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #fbbf24;
+}
+
+.logo i {
+    font-size: 1.8rem;
+    color: #06b6d4;
 }
 
 /* Desktop nav */
@@ -62,6 +72,10 @@ html, body {
     border: none;
     color: #e5e7eb;
     cursor: pointer;
+    padding: 0.5rem;
+    min-width: 44px;  /* Minimum touch target size */
+    min-height: 44px;
+    touch-action: manipulation;  /* Prevent double-tap zoom */
 }
 
 /* MOBILE MENU OVERLAY */

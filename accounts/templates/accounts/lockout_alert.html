@@ -1,0 +1,12 @@
+<!-- Login Lockout Alert Template -->
+{% if axes_locked_out %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <h4 class="alert-heading">⛔ Account Temporarily Locked</h4>
+    <p>
+        Too many failed login attempts. Your account has been locked for security.
+        Please try again in <strong>30 minutes</strong>.
+    </p>
+    <p class="mb-0">If you believe this is a mistake, please contact support.</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}

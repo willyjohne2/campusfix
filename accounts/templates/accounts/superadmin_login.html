@@ -1,0 +1,264 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}<title>SuperAdmin Login | CampusFix</title>{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'accounts/css/forms.css' %}">
+<link rel="stylesheet" href="{% static 'css/register_form.css' %}">
+<style>
+  .auth-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .auth-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    animation: slideIn 0.3s ease-out;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .auth-header h1 {
+    color: #667eea;
+    font-size: 28px;
+    margin: 0 0 8px 0;
+    font-weight: 700;
+  }
+
+  .auth-header::before {
+    content: '🛡️';
+    display: block;
+    font-size: 48px;
+    margin-bottom: 15px;
+  }
+
+  .auth-subtitle {
+    color: #6b7280;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .admin-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .eye-icon {
+    width: 100%;
+    height: 100%;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    display: block;
+    color: #1f2937;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 20px;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+  }
+
+  .btn-submit:active {
+    transform: translateY(0);
+  }
+
+  .error-alert {
+    background: #fee;
+    border: 1px solid #fcc;
+    color: #c33;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+  .success-message {
+    background: #efe;
+    border: 1px solid #cfc;
+    color: #3c3;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+  .auth-footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .footer-text {
+    color: #6b7280;
+    font-size: 14px;
+    margin: 10px 0;
+  }
+
+  .footer-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .footer-link:hover {
+    text-decoration: underline;
+  }
+
+  .regular-login-link {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  @media (max-width: 480px) {
+    .auth-card {
+      padding: 25px;
+    }
+
+    .auth-header h1 {
+      font-size: 24px;
+    }
+
+    .auth-header::before {
+      font-size: 40px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>SuperAdmin Access</h1>
+      <p class="auth-subtitle">System Administration Portal</p>
+    </div>
+
+    <div class="admin-badge">🔐 RESTRICTED ACCESS ONLY</div>
+
+    {% if messages %}
+      <div>
+        {% for message in messages %}
+          {% if message.tags == 'error' %}
+            <div class="error-alert">{{ message }}</div>
+          {% elif message.tags == 'success' %}
+            <div class="success-message">{{ message }}</div>
+          {% else %}
+            <div class="success-message">{{ message }}</div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="POST" class="auth-form" id="superadminLoginForm">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        <label for="id_username" class="form-label">
+          <span>Username</span>
+        </label>
+        <input type="text" name="username" id="id_username" class="form-control" placeholder="Enter your superadmin username" required autofocus>
+      </div>
+
+      <div class="form-group">
+        <label for="id_password" class="form-label">
+          <span>Password</span>
+        </label>
+        <div class="password-wrapper">
+          <input type="password" name="password" id="id_password" class="form-control" placeholder="Enter your password" required>
+          <button type="button" class="toggle-password" onclick="togglePasswordVisibility('id_password')" title="Show password">
+            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit">Enter SuperAdmin Portal</button>
+    </form>
+
+    <div class="auth-footer">
+      <p class="footer-text">Regular user?</p>
+      <p class="regular-login-link">
+        <a href="{% url 'login' %}" class="footer-link">👤 Sign in as regular user</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/auth.js' %}"></script>
+{% endblock %}

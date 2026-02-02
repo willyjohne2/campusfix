@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-<title>CampusFix - Home</title>
+<title>🏠 CampusFix - Home</title>
 {% endblock %}
 
 {% block css %}
@@ -79,8 +79,10 @@
                     <div class="issue-header-top">
                         <div class="issue-meta">
                             <span class="anonymous-poster">
-                                {% if user.is_superuser or user.is_staff %}
-                                    {{ issue.reported_by.get_full_name|default:issue.reported_by.username }} ({{ issue.anonymous_code }})
+                                {% if user == issue.reported_by %}
+                                    You ({{ issue.anonymous_code }})
+                                {% elif user.profile.is_superadmin %}
+                                    {{ issue.reported_by.profile.name }} ({{ issue.anonymous_code }})
                                 {% else %}
                                     Posted by {{ issue.anonymous_code }}
                                 {% endif %}
@@ -114,7 +116,7 @@
                                 {% if issue.comments.count > 0 %}
                                     {% for comment in issue.comments.all %}
                                     <div class="comment-item compact-comment">
-                                        <div class="comment-author"><strong>{% if comment.author.is_staff or comment.author.is_superuser %}Admin{% else %}{{ comment.anonymous_code|default:'User' }}{% endif %}</strong></div>
+                                        <div class="comment-author"><strong>{% if user == comment.author %}You{% elif comment.author.profile.is_admin %}Admin{% elif user.profile.is_superadmin %}{{ comment.author.profile.name }}{% else %}User{% endif %}</strong></div>
                                         <p class="comment-text">{{ comment.content|truncatewords:10 }}</p>
                                     </div>
                                     {% endfor %}
@@ -124,7 +126,7 @@
                             </div>
                             
                             {% if user.is_authenticated %}
-                                {% if user == issue.reported_by or user.is_staff or user.is_superuser %}
+                                {% if user == issue.reported_by or user.profile.is_admin %}
                                 <div class="add-comment-form-small">
                                     <form method="post" action="{% url 'issue_detail' issue.id %}" class="comment-form-inline">
                                         {% csrf_token %}

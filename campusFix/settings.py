@@ -20,35 +20,45 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load environment variables from .env file
 load_dotenv(BASE_DIR / ".env")
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
-
-# SECURITY: load secret and runtime flags from environment
-# In production set DJANGO_SECRET_KEY and DJANGO_DEBUG=False and ALLOWED_HOSTS
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-if not SECRET_KEY:
-    raise RuntimeError("DJANGO_SECRET_KEY environment variable is not set")
-
+# Load common runtime flags early so we can use them when constructing other
+# settings (for example allowing a generated secret key in local development).
 # DEBUG should be False in production. For local development default to True
 # (set DJANGO_DEBUG=False in production environment variables).
-DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
+DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
+
+# SECURITY: load secret from environment. In production you MUST provide
+# `DJANGO_SECRET_KEY`. For local development only, if it's missing we
+# generate a secure random key so the app can run without raising.
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+if not SECRET_KEY:
+    if DEBUG:
+        try:
+            from django.core.management.utils import get_random_secret_key
+
+            SECRET_KEY = get_random_secret_key()
+        except Exception:
+            import secrets
+
+            # Fallback generation if Django util isn't available.
+            SECRET_KEY = secrets.token_urlsafe(50)
+    else:
+        raise RuntimeError("DJANGO_SECRET_KEY environment variable is not set")
 
 # ALLOWED_HOSTS can be provided as a comma-separated env var, e.g. ALLOWED_HOSTS=example.com,api.example.com
 # ─── ALLOWED HOSTS ─────────────────────────────────────────────
 ALLOWED_HOSTS = [
-    h.strip()
-    for h in os.environ.get("ALLOWED_HOSTS", "").split(",")
-    if h.strip()
+    h.strip() for h in os.environ.get("ALLOWED_HOSTS", "").split(",") if h.strip()
 ]
 
 if DEBUG:
-    ALLOWED_HOSTS += ["127.0.0.1", "localhost", "0.0.0.0"]
+    ALLOWED_HOSTS += ["127.0.0.1", "localhost", "0.0.0.0", "10.0.3.1"]
 
 # ─── CSRF TRUSTED ORIGINS ──────────────────────────────────────
 raw_csrf = os.environ.get("CSRF_TRUSTED_ORIGINS", "")
 if raw_csrf:
     CSRF_TRUSTED_ORIGINS = [u.strip() for u in raw_csrf.split(",") if u.strip()]
+else:
+    CSRF_TRUSTED_ORIGINS = []
 
 
 # Application definition
@@ -73,10 +83,12 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.cache.UpdateCacheMiddleware",  # Cache for faster page loads
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    (
+        "django.middleware.csrf.CsrfViewMiddleware" if not DEBUG else None
+    ),  # Disable CSRF in dev
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     # Axes middleware should be enabled to monitor auth attempts
     "axes.middleware.AxesMiddleware",
@@ -84,7 +96,10 @@ MIDDLEWARE = [
     "csp.middleware.CSPMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.cache.FetchFromCacheMiddleware",  # Fetch cached pages
 ]
+# Filter out None values from middleware list
+MIDDLEWARE = [m for m in MIDDLEWARE if m is not None]
 
 # Axes & auth backend: place Axes backend before default to allow blocking
 AUTHENTICATION_BACKENDS = [
@@ -176,8 +191,6 @@ STATICFILES_DIRS = [
 ]
 # Location where `collectstatic` will collect static files for production
 STATIC_ROOT = BASE_DIR / "staticfiles"
-# Use WhiteNoise storage for compressed static files in production
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # Media files (User uploads)
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -204,10 +217,30 @@ PASSWORD_RESET_TIMEOUT = 3 * 24 * 60 * 60
 # Security hardening (production)
 # -----------------------
 # Treat secure cookies and other headers
-SESSION_COOKIE_SECURE = os.environ.get("SESSION_COOKIE_SECURE", "True") == "True"
-CSRF_COOKIE_SECURE = os.environ.get("CSRF_COOKIE_SECURE", "True") == "True"
+# In production these should be True. For local development (DEBUG=True)
+# default them to False so cookies are usable over HTTP during testing.
+SESSION_COOKIE_SECURE = (
+    os.environ.get("SESSION_COOKIE_SECURE", "False" if DEBUG else "True") == "True"
+)
+CSRF_COOKIE_SECURE = (
+    os.environ.get("CSRF_COOKIE_SECURE", "False" if DEBUG else "True") == "True"
+)
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = False
+
+# Session configuration for development - keep sessions after browser close
+if DEBUG:
+    SESSION_COOKIE_AGE = 5 * 24 * 60 * 60  # 5 days in dev
+    SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Persist session after browser close
+    SESSION_ENGINE = "django.contrib.sessions.backends.db"  # Use database for sessions
+
+# CSRF settings: in development, allow CSRF cookies to be set/sent over HTTP
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS = CSRF_TRUSTED_ORIGINS + [
+        "http://127.0.0.1:8000",
+        "http://localhost:8000",
+        "http://0.0.0.0:8000",
+    ]
 
 # Prevent MIME type sniffing
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -233,8 +266,15 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # django-axes settings (brute-force protection)
 # -----------------------
 AXES_ENABLED = os.environ.get("AXES_ENABLED", "True") == "True"
-AXES_FAILURE_LIMIT = int(os.environ.get("AXES_FAILURE_LIMIT", "5"))
-AXES_COOLOFF_TIME = int(os.environ.get("AXES_COOLOFF_TIME", "900"))  # seconds
+AXES_FAILURE_LIMIT = int(
+    os.environ.get("AXES_FAILURE_LIMIT", "2")
+)  # Lock after 2 failed attempts
+AXES_COOLOFF_TIME = int(
+    os.environ.get("AXES_COOLOFF_TIME", "1800")
+)  # 30 minutes in seconds
+AXES_LOCK_OUT_AT_FAILURE = True  # Lockout on reaching limit
+# Note: AXES_USE_USER_AGENT and AXES_USE_IP_ADDRESS are deprecated in axes 8.x
+# Axes now uses IP tracking by default
 # Note: newer django-axes versions deprecate some older settings. Using defaults
 # or newer configuration keys in production is recommended.
 
@@ -271,3 +311,58 @@ if DEBUG:
         directives["style-src"] = tuple(list(style_src) + ["'unsafe-inline'"])
     if "'unsafe-inline'" not in script_src:
         directives["script-src"] = tuple(list(script_src) + ["'unsafe-inline'"])
+
+# -----------------------
+# Admin Dashboard Security
+# -----------------------
+# Restrict admin to HTTPS in production
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_SECURITY_POLICY = {
+        "DIRECTIVES": {
+            "default-src": ("'self'",),
+            "script-src": ("'self'",),
+            "style-src": ("'self'",),
+        }
+    }
+
+# Additional security headers
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0  # 1 year in production
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+SECURE_HSTS_PRELOAD = not DEBUG
+X_FRAME_OPTIONS = "DENY"  # Prevent clickjacking
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+
+# Admin-specific: require admin users to use strong passwords and 2FA-ready
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+]
+
+# -----------------------
+# Caching for Fast Page Navigation
+# -----------------------
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "campusfix-cache",
+        "TIMEOUT": 300,  # Cache pages for 5 minutes
+        "OPTIONS": {"MAX_ENTRIES": 1000},
+    }
+}
+
+# Cache static pages for faster navigation
+CACHE_MIDDLEWARE_ALIAS = "default"
+CACHE_MIDDLEWARE_SECONDS = 300  # 5 minutes
+CACHE_MIDDLEWARE_KEY_PREFIX = "campusfix"
+
+# Static files caching (1 year for better performance)
+if not DEBUG:
+    STATICFILES_STORAGE = (
+        "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+    )

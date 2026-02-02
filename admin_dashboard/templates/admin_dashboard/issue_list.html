@@ -81,7 +81,13 @@
                         <td><span class="badge category">{{ issue.category }}</span></td>
                         <td><span class="badge priority-{{ issue.priority|lower }}">{{ issue.priority }}</span></td>
                         <td><span class="badge status-{{ issue.status|lower|slugify }}">{{ issue.status }}</span></td>
-                        <td>{{ issue.reported_by.first_name|default:issue.reported_by.username }}</td>
+                        <td>
+                          {% if user.profile.is_superadmin %}
+                            {{ issue.reported_by.profile.name }}
+                          {% else %}
+                            {{ issue.anonymous_code }}
+                          {% endif %}
+                        </td>
                         <td>{{ issue.created_at|date:"M d, Y" }}</td>
                         <td><span class="comment-count">{{ issue.comments.count }}</span></td>
                         <td><a href="{% url 'admin_issue_detail' issue.id %}" class="btn-link">View</a></td>

@@ -1,12 +1,19 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from issues.models import Issue, IssueComment
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Count
+from django.contrib import messages
+from django.contrib.auth.models import User
 
 
 @login_required(login_url="login")
 def dashboard_home(request):
+    # Admins should use admin dashboard, not user dashboard
+    if request.user.profile.is_admin():
+        messages.info(request, "Admins use the Admin Dashboard.")
+        return redirect("admin_dashboard_overview")
+
     # Get user's stats
     user_issues = Issue.objects.filter(reported_by=request.user)
     user_comments = IssueComment.objects.filter(author=request.user)
@@ -14,16 +21,52 @@ def dashboard_home(request):
     total_comments = user_comments.count()
     resolved_issues = user_issues.filter(status="Resolved").count()
 
+    # Calculate user ranking
+    all_users_ranked = (
+        Issue.objects.values("reported_by")
+        .annotate(issue_count=Count("id"))
+        .order_by("-issue_count")
+    )
+
+    user_rank = None
+    total_contributors = all_users_ranked.count()
+    for index, user_stat in enumerate(all_users_ranked, start=1):
+        if user_stat["reported_by"] == request.user.id:
+            user_rank = index
+            break
+
+    # Determine badge
+    badge = None
+    badge_color = None
+    if total_issues >= 10:
+        badge = "🏆 Super Contributor"
+        badge_color = "#fbbf24"
+    elif total_issues >= 5:
+        badge = "⭐ Active Contributor"
+        badge_color = "#3b82f6"
+    elif total_issues >= 1:
+        badge = "📝 Contributor"
+        badge_color = "#10b981"
+
     context = {
         "total_issues": total_issues,
         "total_comments": total_comments,
         "resolved_issues": resolved_issues,
+        "user_rank": user_rank,
+        "total_contributors": total_contributors,
+        "badge": badge,
+        "badge_color": badge_color,
     }
     return render(request, "user_dashboard/dashboard_home.html", context)
 
 
 @login_required(login_url="login")
 def my_issues(request):
+    # Admins should use admin dashboard, not user dashboard
+    if request.user.profile.is_admin():
+        messages.info(request, "Admins use the Admin Dashboard to view all issues.")
+        return redirect("admin_dashboard_overview")
+
     # Get user's issues with pagination
     user_issues = Issue.objects.filter(reported_by=request.user).order_by("-created_at")
 
