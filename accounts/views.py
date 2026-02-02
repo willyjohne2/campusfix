@@ -95,9 +95,12 @@ def login_view(request):
     Supports "Remember Me" checkbox to extend session timeout
     """
     if request.user.is_authenticated:
-        # Redirect based on role
-        if request.user.profile.is_admin():
-            return redirect("admin_dashboard_overview")
+        # Redirect based on role - check if profile exists first
+        try:
+            if request.user.profile.is_admin():
+                return redirect("admin_dashboard_overview")
+        except Profile.DoesNotExist:
+            pass  # User has no profile, allow them to continue
         return redirect("dashboard_home")
 
     if request.method == "POST":
