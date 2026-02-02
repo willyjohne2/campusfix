@@ -13,14 +13,17 @@ def dashboard_home(request):
     # Admins should use admin dashboard, not user dashboard
     try:
         user_role = request.user.profile.role
-        if user_role == "admin":
+        if user_role == "admin" or request.user.is_staff:
             messages.info(request, "Admins use the Admin Dashboard.")
             return redirect("admin_dashboard_overview")
-        elif user_role == "superadmin":
+        elif user_role == "superadmin" or request.user.is_superuser:
             messages.info(request, "Super Admins use the Super Admin Dashboard.")
             return redirect("super_admin_dashboard")
     except Profile.DoesNotExist:
-        pass  # User has no profile, allow them to continue
+        if request.user.is_superuser:
+            return redirect("super_admin_dashboard")
+        elif request.user.is_staff:
+            return redirect("admin_dashboard_overview")
 
     # Get user's stats
     user_issues = Issue.objects.filter(reported_by=request.user)
@@ -73,13 +76,16 @@ def my_issues(request):
     # Admins should use admin dashboard, not user dashboard
     try:
         user_role = request.user.profile.role
-        if user_role == "admin":
+        if user_role == "admin" or request.user.is_staff:
             messages.info(request, "Admins use the Admin Dashboard.")
             return redirect("admin_dashboard_overview")
-        elif user_role == "superadmin":
+        elif user_role == "superadmin" or request.user.is_superuser:
             return redirect("super_admin_dashboard")
     except Profile.DoesNotExist:
-        pass  # User has no profile, allow them to continue
+        if request.user.is_superuser:
+            return redirect("super_admin_dashboard")
+        elif request.user.is_staff:
+            return redirect("admin_dashboard_overview")
 
     # Get user's issues with pagination
     user_issues = Issue.objects.filter(reported_by=request.user).order_by("-created_at")

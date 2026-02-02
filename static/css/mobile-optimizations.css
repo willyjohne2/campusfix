@@ -106,15 +106,6 @@
     }
 }
 
-/* Dark mode support (if user prefers) */
-@media (prefers-color-scheme: dark) {
-    /* Adjust colors for better contrast in dark mode */
-    body {
-        background-color: #1a1a1a;
-        color: #e5e7eb;
-    }
-}
-
 /* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
     * {

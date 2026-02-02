@@ -13,7 +13,7 @@
 <main>
 
     <section class="intro">
-        {% if user.is_authenticated and user.profile.role == 'superadmin' %}
+        {% if user.is_authenticated and user.profile.role == 'superadmin' or user.is_superuser %}
             <h1>System Command Center</h1>
             <p>
                 Welcome, Super Administrator. Monitor platform-wide metrics, manage user roles, 
@@ -22,7 +22,7 @@
             <div class="cta-buttons">
                 <a href="{% url 'super_admin_dashboard' %}" class="btn-primary">View Super Admin Dashboard</a>
             </div>
-        {% elif user.is_authenticated and user.profile.role == 'admin' %}
+        {% elif user.is_authenticated and user.profile.role == 'admin' or user.is_staff %}
             <h1>Administrator Hub</h1>
             <p>
                 Welcome back. Review unresolved issues, update system status, and manage 

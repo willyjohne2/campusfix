@@ -3,6 +3,8 @@ html, body {
     height: 100%;
     margin: 0;
     font-family: Roboto, sans-serif;
+    background-color: #f8fafc !important; /* Force light background everywhere */
+    color: #1e293b;
 }
 
 /* STICKY FOOTER LAYOUT */
@@ -10,22 +12,26 @@ html, body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background-color: #f8fafc;
 }
 
 .page-content {
     flex: 1;
+    background-color: #f8fafc;
+    width: 100%;
 }
 
 /* HEADER */
 .site-header {
-    background-color: #0f172a;
-    color: #e5e7eb;
-    padding: 1rem 1.5rem;
+    background-color: #1e1b4b; /* Deep Indigo instead of almost black */
+    color: #f1f5f9;
+    padding: 1.25rem 2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     position: relative;
     z-index: 100;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .logo {
@@ -95,7 +101,7 @@ html, body {
 }
 
 #nav-menu-mobile {
-    background-color: #0f172a;
+    background-color: #1e1b4b; /* Deep Indigo matching header */
     width: 80%;
     max-width: 300px;
     height: 100%;
@@ -153,7 +159,7 @@ html, body {
 .cta-section h3 {
     font-size: clamp(1.5rem, 2.5vw, 2rem);
     margin-bottom: 0.5rem;
-    color: #0f172a;
+    color: #1e1b4b; /* Indigo text instead of black */
 }
 
 .cta-section p {
@@ -171,25 +177,30 @@ html, body {
 }
 
 .btn-primary {
-    background-color: #2563eb;
+    background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
     color: white;
-    padding: 0.7rem 1.4rem;
-    border-radius: 8px;
+    padding: 0.75rem 1.75rem;
+    border-radius: 10px;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
 .btn-secondary {
-    background-color: #0f172a;
-    color: white;
-    padding: 0.7rem 1.4rem;
-    border-radius: 8px;
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    padding: 0.75rem 1.75rem;
+    border-radius: 10px;
     text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
 .btn-primary:hover,
 .btn-secondary:hover {
-    opacity: 0.9;
+    transform: translateY(-2px);
+    opacity: 1;
 }
 
 /* MOBILE NAV */
@@ -205,9 +216,9 @@ html, body {
   
 /* FOOTER */
 .site-footer {
-    background-color: #0f172a;
-    color: #e5e7eb;
-    padding: 2rem 1rem;
+    background-color: #1e1b4b; /* Matching Header Deep Indigo */
+    color: #f1f5f9;
+    padding: 3rem 1.5rem;
     text-align: center;
 }
 

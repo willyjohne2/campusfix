@@ -1,23 +1,26 @@
 /* ==========================
    Main Container
 ========================== */
+body {
+    background-color: #f8fafc; /* Ensure body matches container */
+}
+
 .dashboard-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1rem;
     background-color: #f8fafc;
-    min-height: calc(100vh - 150px);
 }
 
 /* ==========================
    Dashboard Header
 ========================== */
 .dashboard-header {
-    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-    padding: 2rem;
-    border-radius: 16px;
+    background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); /* Modern Indigo Gradient */
+    padding: 2.5rem;
+    border-radius: 20px;
     margin-bottom: 2rem;
-    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.15);
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2);
     color: white;
 }
 
@@ -227,26 +230,33 @@
 }
 
 .btn-primary, .btn-secondary {
-    padding: 0.7rem 1.5rem;
-    border-radius: 8px;
+    padding: 0.8rem 1.8rem;
+    border-radius: 10px;
     text-decoration: none;
-    font-weight: 500;
-    transition: transform 0.2s, opacity 0.2s;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-primary {
-    background-color: #2563eb;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     color: white;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
 }
 
 .btn-secondary {
-    background-color: #0f172a;
-    color: white;
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
 }
 
-.btn-primary:hover, .btn-secondary:hover {
-    transform: scale(1.05);
-    opacity: 0.9;
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(99, 102, 241, 0.3);
+}
+
+.btn-secondary:hover {
+    background-color: #e2e8f0;
+    transform: translateY(-2px);
 }
 
 /* ==========================
@@ -309,37 +319,9 @@
     font-size: 0.9rem;
 }
 
-/* ==========================
-   Profile Actions Buttons
-========================== */
-.profile-actions {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.btn-primary, .btn-secondary {
-    padding: 0.7rem 1.5rem;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: transform 0.2s, opacity 0.2s;
-}
-
-.btn-primary {
-    background-color: #2563eb;
-    color: white;
-}
-
-.btn-secondary {
-    background-color: #0f172a;
-    color: white;
-}
-
-.btn-primary:hover, .btn-secondary:hover {
-    transform: scale(1.05);
-    opacity: 0.9;
+/* Duplicated section removed - now consistently styled */
+.profile-actions.secondary-actions {
+    margin-top: 1rem;
 }
 
 /* ==========================

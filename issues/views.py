@@ -19,14 +19,29 @@ def report_issue(request):
     Only regular users (not admins/superadmins) can report issues
     """
     # Check if user is an admin or superadmin
-    if request.user.profile.role != "user":
+    is_promoted = False
+    try:
+        user_role = request.user.profile.role
+        if (
+            user_role in ["admin", "superadmin"]
+            or request.user.is_staff
+            or request.user.is_superuser
+        ):
+            is_promoted = True
+    except AttributeError:
+        if request.user.is_staff or request.user.is_superuser:
+            is_promoted = True
+
+    if is_promoted:
         messages.error(
             request, "Administrators cannot report issues. Only regular users can."
         )
-        if request.user.profile.role == "admin":
-            return redirect("admin_dashboard_overview")
-        else:
+        if request.user.is_superuser or (
+            hasattr(request.user, "profile")
+            and request.user.profile.role == "superadmin"
+        ):
             return redirect("super_admin_dashboard")
+        return redirect("admin_dashboard_overview")
 
     if request.method == "POST":
         form = ReportIssueForm(request.POST, request.FILES)
