@@ -95,18 +95,7 @@ def login_view(request):
     Supports "Remember Me" checkbox to extend session timeout
     """
     if request.user.is_authenticated:
-        # Check if SuperAdmin first
-        from accounts.models import SuperAdmin
-
-        if SuperAdmin.objects.filter(user=request.user, is_active=True).exists():
-            return redirect("super_admin_dashboard")
-        # Then check regular admin
-        try:
-            if request.user.profile.is_admin():
-                return redirect("admin_dashboard_overview")
-        except Profile.DoesNotExist:
-            pass  # User has no profile, allow them to continue
-        return redirect("dashboard_home")
+        return login_redirect(request)
 
     if request.method == "POST":
         email = request.POST.get("email", "").strip()
@@ -423,7 +412,13 @@ def login_redirect(request):
             return redirect("admin_dashboard_overview")
         return redirect("dashboard_home")
     except Profile.DoesNotExist:
-        # Fallback for users without profiles
+        # Priority fallback: Check if user is in SuperAdmin table
+        from accounts.models import SuperAdmin
+
+        if SuperAdmin.objects.filter(user=request.user, is_active=True).exists():
+            return redirect("super_admin_dashboard")
+
+        # Superuser fallback
         if request.user.is_superuser:
             return redirect("super_admin_dashboard")
         return redirect("dashboard_home")

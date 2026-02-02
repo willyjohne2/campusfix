@@ -14,6 +14,9 @@ except Exception:
 
 
 def homepage(request):
+    # If the user is an admin or superadmin, we use a slightly different content context
+    # but the same statistics. In the template, we show/hide according to role.
+
     # Get category filter from GET parameters
     category_filter = request.GET.get("category", "")
 
