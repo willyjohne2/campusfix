@@ -53,7 +53,7 @@
     
     {% block css %}{% endblock %}
 </head>
-<body style="opacity: 0;">
+<body>
 
 <div class="page-wrapper">
 
@@ -192,39 +192,8 @@
 </footer>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const hamburgerBtn = document.getElementById("hamburger-btn");
-    const overlay = document.getElementById("mobile-menu-overlay");
-    const closeBtn = document.getElementById("close-menu-btn");
-    
-    if (hamburgerBtn && overlay) {
-        hamburgerBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            overlay.classList.add("active");
-            document.body.style.overflow = 'hidden'; // Prevent background scroll
-        });
-    }
-    
-    if (closeBtn && overlay) {
-        closeBtn.addEventListener("click", () => {
-            overlay.classList.remove("active");
-            document.body.style.overflow = '';
-        });
-    }
-    
-    if (overlay) {
-        overlay.addEventListener("click", (e) => {
-            if(e.target === overlay){
-                overlay.classList.remove("active");
-                document.body.style.overflow = '';
-            }
-        });
-    }
-});
-</script>
-
-<!-- Fast Navigation Script -->
+<!-- Main Application Scripts -->
+<script src="{% static 'js/main.js' %}"></script>
 <script src="{% static 'js/fast-navigation.js' %}"></script>
 
 {% block js %}{% endblock %}

@@ -104,7 +104,7 @@
 
                     <!-- Card Image -->
                     {% if issue.attachment %}
-                    <div class="issue-image" onclick="openImageModal(this)">
+                    <div class="issue-image" role="button" tabindex="0">
                         <img src="{{ issue.attachment.url }}" alt="{{ issue.title }}" loading="lazy">
                     </div>
                     {% endif %}
@@ -166,36 +166,13 @@
     </section>
 
     <!-- Image Modal -->
-    <div id="imageModal" class="image-modal" onclick="closeImageModal(event)">
+    <div id="imageModal" class="image-modal">
         <div class="modal-content">
-            <span class="modal-close" onclick="closeImageModal()">&times;</span>
+            <span class="modal-close">&times;</span>
             <img id="modalImage" src="" alt="Full size image">
         </div>
     </div>
 </main>
 
-<script>
-    function openImageModal(element) {
-        const img = element.querySelector('img');
-        const modal = document.getElementById('imageModal');
-        const modalImage = document.getElementById('modalImage');
-        modalImage.src = img.src;
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeImageModal(event) {
-        if (event && event.target.id !== 'imageModal') return;
-        const modal = document.getElementById('imageModal');
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            closeImageModal();
-        }
-    });
-</script>
 {% endblock %}
 
