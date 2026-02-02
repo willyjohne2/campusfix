@@ -304,9 +304,12 @@
         </div>
     </div>
     {% endif %}
+</main>
+{% endblock %}
 
-    <script src="{% static 'js/chart.min.js' %}"></script>
-    <script>
+{% block js %}
+<script src="{% static 'js/chart.min.js' %}"></script>
+<script>
     // Wait for DOM to be ready and Chart.js to be loaded
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof Chart === 'undefined') {
@@ -487,5 +490,6 @@
         }
     }
     </script>
+{% endblock %}
 </main>
 {% endblock %}
