@@ -5,14 +5,18 @@ from django.core.paginator import Paginator
 from django.db.models import Q, Count
 from django.contrib import messages
 from django.contrib.auth.models import User
+from accounts.models import Profile
 
 
 @login_required(login_url="login")
 def dashboard_home(request):
     # Admins should use admin dashboard, not user dashboard
-    if request.user.profile.is_admin():
-        messages.info(request, "Admins use the Admin Dashboard.")
-        return redirect("admin_dashboard_overview")
+    try:
+        if request.user.profile.is_admin():
+            messages.info(request, "Admins use the Admin Dashboard.")
+            return redirect("admin_dashboard_overview")
+    except Profile.DoesNotExist:
+        pass  # User has no profile, allow them to continue
 
     # Get user's stats
     user_issues = Issue.objects.filter(reported_by=request.user)
@@ -63,9 +67,12 @@ def dashboard_home(request):
 @login_required(login_url="login")
 def my_issues(request):
     # Admins should use admin dashboard, not user dashboard
-    if request.user.profile.is_admin():
-        messages.info(request, "Admins use the Admin Dashboard to view all issues.")
-        return redirect("admin_dashboard_overview")
+    try:
+        if request.user.profile.is_admin():
+            messages.info(request, "Admins use the Admin Dashboard to view all issues.")
+            return redirect("admin_dashboard_overview")
+    except Profile.DoesNotExist:
+        pass  # User has no profile, allow them to continue
 
     # Get user's issues with pagination
     user_issues = Issue.objects.filter(reported_by=request.user).order_by("-created_at")
