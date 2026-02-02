@@ -232,6 +232,12 @@ def is_superadmin(user):
     """Check if user has superadmin role"""
     if not user.is_authenticated:
         return False
+    # Check if user is in SuperAdmin table
+    from accounts.models import SuperAdmin
+
+    if SuperAdmin.objects.filter(user=user, is_active=True).exists():
+        return True
+    # Also check profile as fallback
     try:
         return user.profile.is_superadmin()
     except:
