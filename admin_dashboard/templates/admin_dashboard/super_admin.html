@@ -7,8 +7,14 @@
 
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
-<!-- Chart.js Library - Load early -->
-<script src="{% static 'js/chart.min.js' %}"></script>
+<style>
+    body {
+        background-color: #f5f7fa;
+    }
+    .admin-container {
+        background-color: #f5f7fa;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -299,6 +305,7 @@
     </div>
     {% endif %}
 
+    <script src="{% static 'js/chart.min.js' %}"></script>
     <script>
     // Wait for DOM to be ready and Chart.js to be loaded
     document.addEventListener('DOMContentLoaded', function() {
