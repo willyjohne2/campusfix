@@ -35,10 +35,10 @@ function togglePasswordVisibility(inputId) {
     const input = document.getElementById(inputId);
     if (!input) return;
     
-    // Find the button (works with both onclick and data-toggle)
-    let toggleBtn = document.querySelector(`[onclick*="${inputId}"]`);
+    // Find the button adjacent to the input or with the corresponding onclick attribute
+    let toggleBtn = input.parentElement.querySelector('.toggle-password');
     if (!toggleBtn) {
-        toggleBtn = document.querySelector(`[data-toggle="${inputId}"]`);
+        toggleBtn = document.querySelector(`[onclick*="${inputId}"]`);
     }
     
     if (input.type === 'password') {
@@ -46,6 +46,8 @@ function togglePasswordVisibility(inputId) {
         if (toggleBtn) {
             toggleBtn.title = 'Hide password';
             toggleBtn.classList.add('password-visible');
+            // Update SVG icon to "slashed eye" if preferred, 
+            // but the CSS class 'password-visible' handles the slash currently.
         }
     } else {
         input.type = 'password';

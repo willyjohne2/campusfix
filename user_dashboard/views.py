@@ -12,9 +12,13 @@ from accounts.models import Profile
 def dashboard_home(request):
     # Admins should use admin dashboard, not user dashboard
     try:
-        if request.user.profile.is_admin():
+        user_role = request.user.profile.role
+        if user_role == "admin":
             messages.info(request, "Admins use the Admin Dashboard.")
             return redirect("admin_dashboard_overview")
+        elif user_role == "superadmin":
+            messages.info(request, "Super Admins use the Super Admin Dashboard.")
+            return redirect("super_admin_dashboard")
     except Profile.DoesNotExist:
         pass  # User has no profile, allow them to continue
 
@@ -68,9 +72,12 @@ def dashboard_home(request):
 def my_issues(request):
     # Admins should use admin dashboard, not user dashboard
     try:
-        if request.user.profile.is_admin():
-            messages.info(request, "Admins use the Admin Dashboard to view all issues.")
+        user_role = request.user.profile.role
+        if user_role == "admin":
+            messages.info(request, "Admins use the Admin Dashboard.")
             return redirect("admin_dashboard_overview")
+        elif user_role == "superadmin":
+            return redirect("super_admin_dashboard")
     except Profile.DoesNotExist:
         pass  # User has no profile, allow them to continue
 

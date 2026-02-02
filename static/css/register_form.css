@@ -136,6 +136,18 @@ input[type="password"] {
     stroke-linejoin: round;
 }
 
+/* Slash overlay when password is visible */
+.toggle-password.password-visible::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 70%;
+    background: currentColor;
+    transform: rotate(-45deg);
+    top: 15%;
+    left: 48%;
+}
+
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus {

@@ -6,25 +6,6 @@
 <link rel="stylesheet" href="{% static 'accounts/css/forms.css' %}">
 <link rel="stylesheet" href="{% static 'css/register_form.css' %}">
 <link rel="stylesheet" href="{% static 'css/register_validation.css' %}">
-<style>
-  .eye-icon {
-    width: 100%;
-    height: 100%;
-    stroke: currentColor;
-    stroke-width: 2;
-    fill: none;
-  }
-
-  /* Slash overlay when password is visible */
-  .toggle-password.password-visible::after {
-    content: '';
-    position: absolute;
-    width: 2px;
-    height: 110%;
-    background: currentColor;
-    transform: rotate(-45deg);
-  }
-</style>
 {% endblock %}
 
 {% block content %}
@@ -86,7 +67,7 @@
         <div class="password-wrapper">
           {{ form.password1 }}
           <button type="button" class="toggle-password" onclick="togglePasswordVisibility('{{ form.password1.id_for_label }}')" title="Show password">
-            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
               <circle cx="12" cy="12" r="3"></circle>
             </svg>
@@ -114,7 +95,7 @@
         <div class="password-wrapper">
           {{ form.password2 }}
           <button type="button" class="toggle-password" onclick="togglePasswordVisibility('{{ form.password2.id_for_label }}')" title="Show password">
-            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
               <circle cx="12" cy="12" r="3"></circle>
             </svg>

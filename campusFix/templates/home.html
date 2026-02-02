@@ -19,7 +19,17 @@
             whether on campus or in your living spaces.
             Stay anonymous and track your reports in real-time.
         </p>
-        <a href="/issues/" class="btn-primary">Report Issue</a>
+        {% if user.is_authenticated %}
+            {% if user.profile.role == 'superadmin' %}
+                <a href="{% url 'super_admin_dashboard' %}" class="btn-primary">Go to Super Admin Dashboard</a>
+            {% elif user.profile.role == 'admin' %}
+                <a href="{% url 'admin_dashboard_overview' %}" class="btn-primary">Go to Admin Dashboard</a>
+            {% else %}
+                <a href="{% url 'report_issue' %}" class="btn-primary">Report New Issue</a>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'login' %}" class="btn-primary">Login to Report Issue</a>
+        {% endif %}
     </section>
 
     

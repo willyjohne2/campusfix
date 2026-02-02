@@ -73,9 +73,9 @@
             <ul>
                 <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
                 {% if user.is_authenticated %}
-                    {% if user.profile.is_superadmin %}
+                    {% if user.profile.role == 'superadmin' %}
                         <li><a href="{% url 'super_admin_dashboard' %}" class="nav-link">🛡️ Super Admin</a></li>
-                    {% elif user.profile.is_admin %}
+                    {% elif user.profile.role == 'admin' %}
                         <li><a href="{% url 'admin_dashboard_overview' %}" class="nav-link">👨‍💼 Admin Dashboard</a></li>
                     {% else %}
                         <li><a href="{% url 'report_issue' %}" class="nav-link">Report Issue</a></li>
@@ -94,9 +94,9 @@
         <ul>
             <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
             {% if user.is_authenticated %}
-                {% if user.profile.is_superadmin %}
+                {% if user.profile.role == 'superadmin' %}
                     <li><a href="{% url 'super_admin_dashboard' %}" class="nav-link">🛡️ Super Admin</a></li>
-                {% elif user.profile.is_admin %}
+                {% elif user.profile.role == 'admin' %}
                     <li><a href="{% url 'admin_dashboard_overview' %}" class="nav-link">👨‍💼 Admin Dashboard</a></li>
                 {% else %}
                     <li><a href="{% url 'report_issue' %}" class="nav-link">Report Issue</a></li>
@@ -117,20 +117,22 @@
 
 <section class="cta-section">
     {% if user.is_authenticated %}
-        {% if user.profile.is_admin %}
+        {% if user.profile.role == 'superadmin' %}
+            <h3>Campus Overview</h3>
+            <p>Monitor system-wide activity and manage administrator roles from your command center.</p>
+            <div class="cta-buttons">
+                <a href="{% url 'super_admin_dashboard' %}" class="btn-primary">🛡️ Super Admin Dashboard</a>
+            </div>
+        {% elif user.profile.role == 'admin' %}
             <h3>Manage Campus Issues</h3>
-            <p>
-                Review and resolve reported issues to improve campus life for everyone.
-            </p>
+            <p>Review and resolve reported issues to improve campus life for everyone.</p>
             <div class="cta-buttons">
                 <a href="{% url 'admin_dashboard_overview' %}" class="btn-primary">👨‍💼 Admin Dashboard</a>
                 <a href="{% url 'issue_list' %}" class="btn-secondary">📋 View All Issues</a>
             </div>
         {% else %}
             <h3>Have an issue to report?</h3>
-            <p>
-                Help improve campus life by reporting issues anonymously. Your feedback makes a difference.
-            </p>
+            <p>Help improve campus life by reporting issues anonymously. Your feedback makes a difference.</p>
             <div class="cta-buttons">
                 <a href="{% url 'report_issue' %}" class="btn-primary">📝 Report New Issue</a>
                 <a href="{% url 'dashboard_home' %}" class="btn-secondary">📊 View My Issues</a>
@@ -191,18 +193,33 @@
 </div>
 
 <script>
-const hamburgerBtn = document.getElementById("hamburger-btn");
-const overlay = document.getElementById("mobile-menu-overlay");
-const closeBtn = document.getElementById("close-menu-btn");
-hamburgerBtn.addEventListener("click", () => {
-    overlay.classList.add("active");
-});
-closeBtn.addEventListener("click", () => {
-    overlay.classList.remove("active");
-});
-overlay.addEventListener("click", (e) => {
-    if(e.target === overlay){
-        overlay.classList.remove("active");
+document.addEventListener('DOMContentLoaded', function() {
+    const hamburgerBtn = document.getElementById("hamburger-btn");
+    const overlay = document.getElementById("mobile-menu-overlay");
+    const closeBtn = document.getElementById("close-menu-btn");
+    
+    if (hamburgerBtn && overlay) {
+        hamburgerBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            overlay.classList.add("active");
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+        });
+    }
+    
+    if (closeBtn && overlay) {
+        closeBtn.addEventListener("click", () => {
+            overlay.classList.remove("active");
+            document.body.style.overflow = '';
+        });
+    }
+    
+    if (overlay) {
+        overlay.addEventListener("click", (e) => {
+            if(e.target === overlay){
+                overlay.classList.remove("active");
+                document.body.style.overflow = '';
+            }
+        });
     }
 });
 </script>

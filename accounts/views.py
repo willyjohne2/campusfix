@@ -414,13 +414,19 @@ class PasswordResetCompleteView(DjangoPasswordResetCompleteView):
 
 @login_required(login_url="login")
 def login_redirect(request):
+    """Redirect users to their respective dashboards based on role."""
     try:
-        admin_group = Group.objects.get(name="Admins")
-        if admin_group in request.user.groups.all():
-            return redirect("admin_dashboard_overview")  # Redirect to admin dashboard
-    except Group.DoesNotExist:
-        pass
-    return redirect("dashboard_home")  # Redirect to user dashboard
+        profile = request.user.profile
+        if profile.role == "superadmin":
+            return redirect("super_admin_dashboard")
+        elif profile.role == "admin":
+            return redirect("admin_dashboard_overview")
+        return redirect("dashboard_home")
+    except Profile.DoesNotExist:
+        # Fallback for users without profiles
+        if request.user.is_superuser:
+            return redirect("super_admin_dashboard")
+        return redirect("dashboard_home")
 
 
 @login_required(login_url="login")

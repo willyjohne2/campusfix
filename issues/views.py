@@ -13,18 +13,20 @@ from .forms import (
 
 
 @login_required(login_url="login")
-@login_required(login_url="login")
 def report_issue(request):
     """
     View for reporting a new issue
     Only regular users (not admins/superadmins) can report issues
     """
-    # Check if user is an admin - admins can't report issues
-    if request.user.profile.is_admin():
+    # Check if user is an admin or superadmin
+    if request.user.profile.role != "user":
         messages.error(
             request, "Administrators cannot report issues. Only regular users can."
         )
-        return redirect("dashboard_home")
+        if request.user.profile.role == "admin":
+            return redirect("admin_dashboard_overview")
+        else:
+            return redirect("super_admin_dashboard")
 
     if request.method == "POST":
         form = ReportIssueForm(request.POST, request.FILES)

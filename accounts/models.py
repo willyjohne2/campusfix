@@ -63,8 +63,8 @@ class Profile(models.Model):
         return self.name if self.name else self.user.email
 
     def is_admin(self):
-        """Check if user is admin or superadmin"""
-        return self.role in ["admin", "superadmin"]
+        """Check if user is strictly an administrator"""
+        return self.role == "admin"
 
     def is_superadmin(self):
         """Check if user is superadmin"""
