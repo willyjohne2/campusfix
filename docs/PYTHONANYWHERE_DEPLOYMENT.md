@@ -39,7 +39,7 @@ pip install -r requirements.txt
 nano .env
 ```
 
-Paste this (replace YOUR_USERNAME with your PythonAnywhere username):
+Paste this:
 
 ```env
 # Django Configuration
@@ -50,20 +50,18 @@ DJANGO_SECRET_KEY=v)dny32r8g*62g9-f%&!k1ss-6urk=+h8zbg5_l10j(0fk%c8t
 DATABASE_URL=sqlite:///db.sqlite3
 
 # Allowed Hosts
-ALLOWED_HOSTS=YOUR_USERNAME.pythonanywhere.com
+ALLOWED_HOSTS=pope.pythonanywhere.com
 
 # CSRF Trusted Origins
-CSRF_TRUSTED_ORIGINS=https://YOUR_USERNAME.pythonanywhere.com
+CSRF_TRUSTED_ORIGINS=https://pope.pythonanywhere.com
 
-# Email Configuration (Optional - add your Gmail)
-EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USE_TLS=True
-EMAIL_HOST_USER=your-email@gmail.com
-EMAIL_HOST_PASSWORD=your-app-password
+# Brevo Email API Configuration
+BREVO_API_KEY=your-brevo-api-key-from-brevo-account
+BREVO_SENDER_EMAIL=campusfix8@gmail.com
+BREVO_SENDER_NAME=CampusFix
+DEFAULT_FROM_EMAIL=CampusFix <campusfix8@gmail.com>
 
-# Security
+# Security Settings
 SECURE_SSL_REDIRECT=True
 SESSION_COOKIE_SECURE=True
 CSRF_COOKIE_SECURE=True
@@ -83,13 +81,40 @@ python manage.py migrate
 python manage.py collectstatic --noinput
 ```
 
-### Step 7: Create Superuser
+### Step 7: Create SuperAdmin Account
+
+For SuperAdmin portal access, run:
 
 ```bash
-python manage.py createsuperuser
+python manage.py shell
 ```
 
-Enter: name, email, password
+Then paste:
+
+```python
+from accounts.models import SuperAdmin
+from django.contrib.auth.models import User
+
+# Create a superadmin user
+user = User.objects.create_user(
+    username='pope',
+    email='pope@example.com',
+    password='your_secure_password_here'
+)
+
+# Create SuperAdmin record
+SuperAdmin.objects.create(
+    username='pope',
+    password_hash=user.password,
+    is_active=True,
+    user=user
+)
+
+print("SuperAdmin created!")
+exit()
+```
+
+Now you can login to SuperAdmin portal at `/accounts/superadmin-login/` with username **pope** and your password.
 
 ### Step 8: Set Up Web App
 
@@ -109,9 +134,12 @@ import os
 import sys
 
 # Add your project directory to the sys.path
-path = '/home/YOUR_USERNAME/campusfix'
+path = '/home/pope/campusfix'
 if path not in sys.path:
     sys.path.append(path)
+
+# Add virtualenv site-packages to sys.path
+sys.path.insert(0, '/home/pope/campusfix/venv/lib/python3.11/site-packages')
 
 # Set environment variables
 os.environ['DJANGO_SETTINGS_MODULE'] = 'campusFix.settings'
@@ -122,17 +150,10 @@ from dotenv import load_dotenv
 env_path = Path(path) / '.env'
 load_dotenv(dotenv_path=env_path)
 
-# Activate virtual environment
-activate_this = '/home/YOUR_USERNAME/campusfix/venv/bin/activate_this.py'
-with open(activate_this) as file_:
-    exec(file_.read(), dict(__file__=activate_this))
-
 # Import Django WSGI application
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
 ```
-
-**Replace `YOUR_USERNAME`** with your actual PythonAnywhere username!
 
 **Save:** Click green "Save" button
 
@@ -141,29 +162,29 @@ application = get_wsgi_application()
 In **Web** tab:
 
 1. Find **"Virtualenv"** section
-2. Enter: `/home/YOUR_USERNAME/campusfix/venv`
+2. Enter: `/home/pope/campusfix/venv`
 3. Click checkmark ✓
 
 ### Step 11: Configure Static Files
 
 In **Web** tab, scroll to **"Static files"**:
 
-| URL        | Directory                                   |
-| ---------- | ------------------------------------------- |
-| `/static/` | `/home/YOUR_USERNAME/campusfix/staticfiles` |
-| `/media/`  | `/home/YOUR_USERNAME/campusfix/media`       |
+| URL        | Directory                          |
+| ---------- | ---------------------------------- |
+| `/static/` | `/home/pope/campusfix/staticfiles` |
+| `/media/`  | `/home/pope/campusfix/media`       |
 
 Click "Add" for each entry
 
 ### Step 12: Reload Web App
 
 1. Scroll to top of **Web** tab
-2. Click big green **"Reload YOUR_USERNAME.pythonanywhere.com"** button
+2. Click big green **"Reload pope.pythonanywhere.com"** button
 3. Wait 30 seconds
 
 ### Step 13: Test Your Site!
 
-Visit: `https://YOUR_USERNAME.pythonanywhere.com`
+Visit: `https://pope.pythonanywhere.com`
 
 ## ✅ Post-Deployment Checklist
 
@@ -232,7 +253,7 @@ python manage.py createsuperuser
 ## 🎉 Success!
 
 Your site should be live at:
-**https://YOUR_USERNAME.pythonanywhere.com**
+**https://pope.pythonanywhere.com**
 
 Now you can:
 
