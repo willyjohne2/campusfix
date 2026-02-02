@@ -267,12 +267,15 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # -----------------------
 AXES_ENABLED = os.environ.get("AXES_ENABLED", "True") == "True"
 AXES_FAILURE_LIMIT = int(
-    os.environ.get("AXES_FAILURE_LIMIT", "2")
-)  # Lock after 2 failed attempts
+    os.environ.get("AXES_FAILURE_LIMIT", "4")
+)  # Lock after 4 failed attempts
 AXES_COOLOFF_TIME = int(
     os.environ.get("AXES_COOLOFF_TIME", "1800")
 )  # 30 minutes in seconds
 AXES_LOCK_OUT_AT_FAILURE = True  # Lockout on reaching limit
+# Use a combination of user and IP to prevent locking out entire networks
+AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True
+AXES_RESET_ON_SUCCESS = True  # Reset failure count on successful login
 # Note: AXES_USE_USER_AGENT and AXES_USE_IP_ADDRESS are deprecated in axes 8.x
 # Axes now uses IP tracking by default
 # Note: newer django-axes versions deprecate some older settings. Using defaults
