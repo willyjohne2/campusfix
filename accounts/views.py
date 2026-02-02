@@ -97,6 +97,7 @@ def login_view(request):
     if request.user.is_authenticated:
         # Check if SuperAdmin first
         from accounts.models import SuperAdmin
+
         if SuperAdmin.objects.filter(user=request.user, is_active=True).exists():
             return redirect("super_admin_dashboard")
         # Then check regular admin
@@ -163,10 +164,11 @@ def login_view(request):
 
             # Redirect based on user role - check SuperAdmin first
             from accounts.models import SuperAdmin
+
             if SuperAdmin.objects.filter(user=user, is_active=True).exists():
                 messages.success(request, f"Welcome SuperAdmin {user.username}!")
                 return redirect("super_admin_dashboard")
-            
+
             # Then check if regular admin
             try:
                 if user.profile.is_admin():
