@@ -6,6 +6,7 @@ from django.contrib import messages
 from accounts.forms import ContactForm
 from accounts.email_utils import send_contact_email
 from accounts.models import ContactMessage
+from django.views.decorators.cache import never_cache
 
 try:
     from django_ratelimit.decorators import ratelimit
@@ -13,6 +14,7 @@ except Exception:
     from django_ratelimit.decorators import ratelimit
 
 
+@never_cache
 def homepage(request):
     # If the user is an admin or superadmin, we use a slightly different content context
     # but the same statistics. In the template, we show/hide according to role.

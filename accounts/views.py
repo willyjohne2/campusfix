@@ -6,6 +6,7 @@ from django.contrib.auth.views import (
 )
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.cache import never_cache
 
 try:
     from django_ratelimit.decorators import ratelimit
@@ -86,6 +87,7 @@ def register(request):
     return render(request, "accounts/register.html", {"form": form})
 
 
+@never_cache
 @ensure_csrf_cookie
 @ratelimit(key="ip", rate="10/m", block=True)
 def login_view(request):
@@ -324,6 +326,7 @@ def resend_verification(request):
         return render(request, "accounts/verify_email.html", {"form": form})
 
 
+@never_cache
 @login_required(login_url="login")
 def logout_view(request):
     """
