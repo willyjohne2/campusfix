@@ -12,6 +12,30 @@ from .forms import (
 )
 
 
+def is_user_admin(user):
+    """Helper function to check if a user is admin or superadmin"""
+    if not user.is_authenticated:
+        return False
+
+    # Check if superadmin
+    try:
+        from accounts.models import SuperAdmin
+
+        if SuperAdmin.objects.filter(user=user, is_active=True).exists():
+            return True
+    except:
+        pass
+
+    # Check if profile admin
+    try:
+        if user.profile.is_admin():
+            return True
+    except:
+        pass
+
+    return False
+
+
 @login_required(login_url="login")
 def report_issue(request):
     """
@@ -153,9 +177,7 @@ def issue_detail(request, issue_id):
             return redirect("login")
 
         # Check if user can comment (only issue owner or admin)
-        can_comment = (
-            request.user == issue.reported_by or request.user.profile.is_admin()
-        )
+        can_comment = request.user == issue.reported_by or is_user_admin(request.user)
 
         if not can_comment:
             messages.error(
@@ -196,11 +218,8 @@ def issue_detail(request, issue_id):
         "issue": issue,
         "comments": comments,
         "form": form,
-        "can_edit": request.user == issue.reported_by
-        or request.user.profile.is_admin(),
-        "can_comment": (
-            request.user == issue.reported_by or request.user.profile.is_admin()
-        ),
+        "can_edit": request.user == issue.reported_by or is_user_admin(request.user),
+        "can_comment": request.user == issue.reported_by or is_user_admin(request.user),
     }
 
     return render(request, "issues/issue_detail.html", context)
@@ -214,14 +233,14 @@ def delete_issue(request, issue_id):
     issue = get_object_or_404(Issue, id=issue_id)
 
     # Check permissions
-    if request.user != issue.reported_by and not request.user.profile.is_admin():
+    if request.user != issue.reported_by and not is_user_admin(request.user):
         messages.error(request, "You do not have permission to delete this issue.")
         return redirect("issue_detail", issue_id=issue.id)
 
     if request.method == "POST":
         issue.delete()
         messages.success(request, "Issue deleted successfully!")
-        if request.user.profile.is_admin():
+        if is_user_admin(request.user):
             return redirect("issue_list")
         else:
             return redirect("my_issues")
@@ -238,7 +257,7 @@ def update_issue_status(request, issue_id):
     issue = get_object_or_404(Issue, id=issue_id)
 
     # Check if user is admin
-    if not request.user.profile.is_admin():
+    if not is_user_admin(request.user):
         messages.error(request, "You do not have permission to update issue status.")
         return redirect("issue_detail", issue_id=issue.id)
 
