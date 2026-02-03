@@ -269,17 +269,9 @@ def update_issue_status(request, issue_id):
         if form.is_valid():
             form.save()
             messages.success(request, "Issue updated successfully!")
-            return redirect("issue_detail", issue_id=issue.id)
         else:
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
-    else:
-        form = UpdateIssueStatusForm(instance=issue)
 
-    context = {
-        "issue": issue,
-        "form": form,
-    }
-
-    return render(request, "issues/update_issue_status.html", context)
+    return redirect("admin_issue_detail", issue_id=issue.id)

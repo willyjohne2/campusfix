@@ -18,8 +18,14 @@ def is_admin(user):
     """Check if user has admin role"""
     if not user.is_authenticated:
         return False
+    # Allow superadmins as admins for dashboard access
     try:
-        return user.profile.is_admin()
+        if SuperAdmin.objects.filter(user=user, is_active=True).exists():
+            return True
+    except Exception:
+        pass
+    try:
+        return user.profile.is_admin() or user.profile.is_superadmin()
     except:
         return False
 
