@@ -297,6 +297,10 @@ def resend_verification(request):
             pass
         messages.success(request, "Verification code resent. Check your email.")
         return redirect("verify_email")
+    else:
+        # Handle GET request - display form to request email
+        form = EmailVerificationForm()
+        return render(request, "accounts/verify_email.html", {"form": form})
 
 
 @login_required(login_url="login")

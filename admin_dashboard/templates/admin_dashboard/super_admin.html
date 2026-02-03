@@ -23,6 +23,36 @@
         </div>
     </section>
 
+    <!-- Quick Search & Filter Section -->
+    <div class="search-filter-section">
+        <form method="get" class="search-form">
+            <div class="search-input-group">
+                <input 
+                    type="text" 
+                    name="search" 
+                    placeholder="🔍 Search users, issues, emails..." 
+                    value="{{ search_query }}"
+                    class="search-input"
+                >
+                <select name="search_type" class="search-type-select">
+                    <option value="all" {% if search_type == 'all' %}selected{% endif %}>All</option>
+                    <option value="users" {% if search_type == 'users' %}selected{% endif %}>Users</option>
+                    <option value="issues" {% if search_type == 'issues' %}selected{% endif %}>Issues</option>
+                </select>
+                <button type="submit" class="search-btn">Search</button>
+                {% if search_query %}
+                    <a href="{% url 'super_admin_dashboard' %}" class="clear-btn">Clear</a>
+                {% endif %}
+            </div>
+        </form>
+        {% if search_query %}
+            <p class="search-results-info">
+                📍 Showing results for: <strong>"{{ search_query }}"</strong>
+                {% if search_type != 'all' %}in <strong>{{ search_type }}</strong>{% endif %}
+            </p>
+        {% endif %}
+    </div>
+
     <!-- Key Stats -->
     <div class="stats-grid">
         <div class="stat-box">

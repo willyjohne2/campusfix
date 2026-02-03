@@ -308,6 +308,20 @@ def super_admin_dashboard(request):
     # All users with role and activity info
     all_users = User.objects.select_related("profile").order_by("-date_joined")[:50]
 
+    # Search/filter functionality
+    search_query = request.GET.get("search", "").strip()
+    search_type = request.GET.get("search_type", "all").strip()  # all, users, issues
+
+    if search_query:
+        from django.db.models import Q
+
+        if search_type in ["all", "users"]:
+            all_users = all_users.filter(
+                Q(username__icontains=search_query)
+                | Q(email__icontains=search_query)
+                | Q(profile__name__icontains=search_query)
+            )
+
     # Recent activity logs
     recent_activity = AdminActivity.objects.all().order_by("-timestamp")[:20]
 
@@ -315,6 +329,7 @@ def super_admin_dashboard(request):
     failed_logins = []
     try:
         from axes.models import AccessAttempt
+
         failed_logins = AccessAttempt.objects.order_by("-attempt_time")[:20]
     except:
         pass
@@ -323,21 +338,30 @@ def super_admin_dashboard(request):
     if not failed_logins:
         failed_logins = [
             {
-                'username': 'admin_test',
-                'ip_address': '192.168.1.1',
-                'failures_since_start': 3,
-                'attempt_time': timezone.now() - timedelta(minutes=45)
+                "username": "admin_test",
+                "ip_address": "192.168.1.1",
+                "failures_since_start": 3,
+                "attempt_time": timezone.now() - timedelta(minutes=45),
             },
             {
-                'username': 'unknown_user',
-                'ip_address': '45.12.88.21',
-                'failures_since_start': 5,
-                'attempt_time': timezone.now() - timedelta(hours=2)
-            }
+                "username": "unknown_user",
+                "ip_address": "45.12.88.21",
+                "failures_since_start": 5,
+                "attempt_time": timezone.now() - timedelta(hours=2),
+            },
         ]
 
     # Recent issues
     recent_issues = Issue.objects.all().order_by("-created_at")[:20]
+
+    if search_query and search_type in ["all", "issues"]:
+        from django.db.models import Q
+
+        recent_issues = recent_issues.filter(
+            Q(title__icontains=search_query)
+            | Q(description__icontains=search_query)
+            | Q(category__icontains=search_query)
+        )
 
     context = {
         # Stats
@@ -361,6 +385,9 @@ def super_admin_dashboard(request):
         "recent_activity": recent_activity,
         "failed_logins": failed_logins,
         "recent_issues": recent_issues,
+        # Search data
+        "search_query": search_query,
+        "search_type": search_type,
     }
 
     return render(request, "admin_dashboard/super_admin.html", context)
