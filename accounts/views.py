@@ -184,8 +184,12 @@ def superadmin_login(request):
     """
     if request.user.is_authenticated:
         # Redirect based on role
-        if request.user.profile.is_superadmin():
-            return redirect("super_admin_dashboard")
+        try:
+            if request.user.profile.is_superadmin():
+                return redirect("super_admin_dashboard")
+        except Profile.DoesNotExist:
+            if SuperAdmin.objects.filter(user=request.user, is_active=True).exists():
+                return redirect("super_admin_dashboard")
         return redirect("dashboard_home")
 
     if request.method == "POST":
@@ -205,6 +209,23 @@ def superadmin_login(request):
             if check_password(password, superadmin.password_hash):
                 # If linked to user account, login that user
                 if superadmin.user:
+                    # Ensure profile exists for superadmin user
+                    Profile.objects.get_or_create(
+                        user=superadmin.user,
+                        defaults={
+                            "name": superadmin.username or superadmin.user.username,
+                            "is_verified": True,
+                            "role": "superadmin",
+                        },
+                    )
+                    # Ensure role is correct if profile already exists
+                    try:
+                        profile = superadmin.user.profile
+                        if profile.role != "superadmin":
+                            profile.role = "superadmin"
+                            profile.save(update_fields=["role"])
+                    except Profile.DoesNotExist:
+                        pass
                     # Specify backend explicitly for multiple auth backends
                     login(
                         request,
