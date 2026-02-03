@@ -176,6 +176,15 @@ document.addEventListener('DOMContentLoaded', () => {
             },
         },
     }), ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], [8, 12, 7, 15, 20, 5, 3]);
+
+    const roleSelects = document.querySelectorAll('.role-select');
+    roleSelects.forEach((selectElement) => {
+        selectElement.addEventListener('change', (event) => {
+            const userId = event.currentTarget.dataset.userId;
+            if (!userId) return;
+            window.handleRoleChange(event.currentTarget, userId);
+        });
+    });
 });
 
 window.handleRoleChange = (selectElement, userId) => {

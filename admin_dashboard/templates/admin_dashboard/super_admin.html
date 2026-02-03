@@ -76,15 +76,15 @@
             <p>Total Issues</p>
         </div>
         <div class="stat-box">
-            <h3 style="color: var(--success);">{{ resolved_issues }}</h3>
+            <h3 class="stat-value stat-value--success">{{ resolved_issues }}</h3>
             <p>Resolved</p>
         </div>
         <div class="stat-box">
-            <h3 style="color: var(--warning);">{{ pending_issues }}</h3>
+            <h3 class="stat-value stat-value--warning">{{ pending_issues }}</h3>
             <p>Pending</p>
         </div>
         <div class="stat-box">
-            <h3 style="color: var(--info);">{{ in_progress_issues }}</h3>
+            <h3 class="stat-value stat-value--info">{{ in_progress_issues }}</h3>
             <p>In Progress</p>
         </div>
     </div>
@@ -144,47 +144,45 @@
 
     <!-- Leaderboards -->
     <div class="charts-section">
-        <div class="table-section" style="margin-bottom: 0;">
+        <div class="table-section table-section--compact">
             <h2>🏆 Top Admins <span
-                    style="font-size: 0.9rem; color: var(--text-secondary); font-weight: normal;">(Resolved
+                    class="section-subtitle">(Resolved
                     Issues)</span></h2>
             {% if top_admins %}
             {% for admin in top_admins %}
             <div class="leaderboard-item">
-                <div style="display: flex; align-items: center;">
-                    <span class="rank-badge"
-                        style="background: {% if forloop.counter == 1 %}#f59e0b{% elif forloop.counter == 2 %}#94a3b8{% elif forloop.counter == 3 %}#b45309{% else %}#e2e8f0; color: #64748b{% endif %};">{{
+                <div class="leaderboard-meta">
+                    <span class="rank-badge {% if forloop.counter == 1 %}rank-badge--1{% elif forloop.counter == 2 %}rank-badge--2{% elif forloop.counter == 3 %}rank-badge--3{% else %}rank-badge--default{% endif %}">{{
                         forloop.counter }}</span>
-                    <span style="font-weight: 600; color: var(--text-primary);">{{ admin.admin__profile__name }}</span>
+                    <span class="leaderboard-name">{{ admin.admin__profile__name }}</span>
                 </div>
-                <span class="role-badge" style="background: #ecfdf5; color: #047857;">{{ admin.resolved_count }}
+                <span class="role-badge badge-success">{{ admin.resolved_count }}
                     resolved</span>
             </div>
             {% endfor %}
             {% else %}
-            <p style="text-align: center; color: var(--text-secondary); padding: 1rem;">No data available yet.</p>
+            <p class="empty-state">No data available yet.</p>
             {% endif %}
         </div>
 
-        <div class="table-section" style="margin-bottom: 0;">
+        <div class="table-section table-section--compact">
             <h2>📝 Top Contributors <span
-                    style="font-size: 0.9rem; color: var(--text-secondary); font-weight: normal;">(Reported
+                    class="section-subtitle">(Reported
                     Issues)</span></h2>
             {% if top_reporters %}
             {% for reporter in top_reporters %}
             <div class="leaderboard-item">
-                <div style="display: flex; align-items: center;">
-                    <span class="rank-badge"
-                        style="background: {% if forloop.counter == 1 %}#f59e0b{% elif forloop.counter == 2 %}#94a3b8{% elif forloop.counter == 3 %}#b45309{% else %}#e2e8f0; color: #64748b{% endif %};">{{
+                <div class="leaderboard-meta">
+                    <span class="rank-badge {% if forloop.counter == 1 %}rank-badge--1{% elif forloop.counter == 2 %}rank-badge--2{% elif forloop.counter == 3 %}rank-badge--3{% else %}rank-badge--default{% endif %}">{{
                         forloop.counter }}</span>
-                    <span style="font-weight: 600; color: var(--text-primary);">{{ reporter.reported_by__profile__name }}</span>
+                    <span class="leaderboard-name">{{ reporter.reported_by__profile__name }}</span>
                 </div>
-                <span class="role-badge" style="background: #eff6ff; color: #1d4ed8;">{{ reporter.issue_count }}
+                <span class="role-badge badge-info">{{ reporter.issue_count }}
                     issues</span>
             </div>
             {% endfor %}
             {% else %}
-            <p style="text-align: center; color: var(--text-secondary); padding: 1rem;">No data available yet.</p>
+            <p class="empty-state">No data available yet.</p>
             {% endif %}
         </div>
     </div>
@@ -192,7 +190,7 @@
     <!-- User Management Table -->
     <div class="table-section">
         <h2>👥 User Management Table</h2>
-        <div style="overflow-x: auto;">
+        <div class="table-scroll">
             <table class="data-table">
                 <thead>
                     <tr>
@@ -208,8 +206,8 @@
                     {% for user in all_users %}
                     <tr>
                         <td>
-                            <div style="font-weight: 600;">{{ user.profile.name }}</div>
-                            <div style="font-size: 0.8rem; color: var(--text-secondary);">@{{ user.username }}</div>
+                            <div class="user-name">{{ user.profile.name }}</div>
+                            <div class="user-handle">@{{ user.username }}</div>
                         </td>
                         <td>{{ user.email }}</td>
                         <td>
@@ -220,14 +218,12 @@
                         <td>
                             {% if user.is_active %}
                             <span class="status-active">
-                                <span
-                                    style="display:block; width:8px; height:8px; border-radius:50%; background-color:currentColor;"></span>
+                                <span class="status-dot"></span>
                                 Active
                             </span>
                             {% else %}
                             <span class="status-inactive">
-                                <span
-                                    style="display:block; width:8px; height:8px; border-radius:50%; background-color:currentColor;"></span>
+                                <span class="status-dot"></span>
                                 Inactive
                             </span>
                             {% endif %}
@@ -235,11 +231,10 @@
                         <td>{{ user.date_joined|date:"M d, Y" }}</td>
                         <td>
                             {% if user != request.user %}
-                            <form method="post" action="{% url 'promote_user' user.id %}" style="display: inline;"
+                            <form method="post" action="{% url 'promote_user' user.id %}" class="inline-form"
                                 id="role-form-{{ user.id }}">
                                 {% csrf_token %}
-                                <select name="role" onchange="handleRoleChange(this, {{ user.id }})" class="action-btn"
-                                    style="cursor: pointer; border: 1px solid #cbd5e1;">
+                                <select name="role" data-user-id="{{ user.id }}" class="action-btn action-select role-select">
                                     <option value="">Change Role</option>
                                     <option value="user">User</option>
                                     <option value="admin">Admin</option>
@@ -249,7 +244,7 @@
                                     value="">
                             </form>
 
-                            <form method="post" action="{% url 'deactivate_user' user.id %}" style="display: inline;">
+                            <form method="post" action="{% url 'deactivate_user' user.id %}" class="inline-form">
                                 {% csrf_token %}
                                 <button type="submit"
                                     class="action-btn {% if user.is_active %}btn-deactivate{% else %}btn-activate{% endif %}">
@@ -257,8 +252,7 @@
                                 </button>
                             </form>
                             {% else %}
-                            <span
-                                style="color: var(--text-secondary); font-style: italic; padding: 0 1rem;">(You)</span>
+                            <span class="self-label">(You)</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -271,7 +265,7 @@
     <!-- Recent Issues Table -->
     <div class="table-section">
         <h2>📋 Recent Issues Log</h2>
-        <div style="overflow-x: auto;">
+        <div class="table-scroll">
             <table class="data-table">
                 <thead>
                     <tr>
@@ -286,23 +280,20 @@
                 <tbody>
                     {% for issue in recent_issues %}
                     <tr>
-                        <td style="font-weight: 500;">{{ issue.title }}</td>
+                        <td class="issue-title">{{ issue.title }}</td>
                         <td>{{ issue.reported_by.profile.name }}</td>
-                        <td><span
-                                style="background: #f3f4f6; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem;">{{
-                                issue.category }}</span></td>
+                        <td><span class="category-badge">{{ issue.category }}</span></td>
                         <td>
                             {% if issue.status == 'Resolved' %}
                             <span class="status-active">{{ issue.status }}</span>
                             {% elif issue.status == 'Pending' %}
-                            <span style="color: var(--warning); font-weight: 600;">{{ issue.status }}</span>
+                            <span class="status-pending">{{ issue.status }}</span>
                             {% else %}
-                            <span style="color: var(--info); font-weight: 600;">{{ issue.status }}</span>
+                            <span class="status-info">{{ issue.status }}</span>
                             {% endif %}
                         </td>
                         <td>{{ issue.created_at|date:"M d, Y" }}</td>
-                        <td><a href="{% url 'admin_issue_detail' issue.id %}" class="action-btn btn-primary-action"
-                                style="text-decoration: none;">View</a></td>
+                        <td><a href="{% url 'admin_issue_detail' issue.id %}" class="action-btn btn-primary-action link-button">View</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -313,7 +304,7 @@
     <!-- Admin Activity Log -->
     <div class="table-section">
         <h2>📝 Admin Activity Log</h2>
-        <div style="overflow-x: auto;">
+        <div class="table-scroll">
             <table class="data-table">
                 <thead>
                     <tr>
@@ -341,7 +332,7 @@
     {% if failed_logins %}
     <div class="table-section">
         <h2>🚨 Failed Login Attempts</h2>
-        <div style="overflow-x: auto;">
+        <div class="table-scroll">
             <table class="data-table">
                 <thead>
                     <tr>
@@ -356,7 +347,7 @@
                     <tr>
                         <td><strong>{{ attempt.username|default:"Unknown" }}</strong></td>
                         <td>{{ attempt.ip_address }}</td>
-                        <td><span class="role-badge" style="background: #fee2e2; color: #b91c1c;">{{ attempt.failures_since_start|default:"1" }}</span></td>
+                        <td><span class="role-badge badge-danger">{{ attempt.failures_since_start|default:"1" }}</span></td>
                         <td>{{ attempt.attempt_time|date:"M d, Y H:i" }}</td>
                     </tr>
                     {% endfor %}

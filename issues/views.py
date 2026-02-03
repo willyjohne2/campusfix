@@ -214,12 +214,15 @@ def issue_detail(request, issue_id):
     # Get all comments
     comments = IssueComment.objects.filter(issue=issue)
 
+    can_admin_action = is_user_admin(request.user)
+
     context = {
         "issue": issue,
         "comments": comments,
         "form": form,
-        "can_edit": request.user == issue.reported_by or is_user_admin(request.user),
-        "can_comment": request.user == issue.reported_by or is_user_admin(request.user),
+        "can_edit": request.user == issue.reported_by or can_admin_action,
+        "can_comment": request.user == issue.reported_by or can_admin_action,
+        "can_admin_action": can_admin_action,
     }
 
     return render(request, "issues/issue_detail.html", context)

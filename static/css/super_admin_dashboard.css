@@ -260,12 +260,27 @@ body {
     font-size: 0.75rem;
 }
 
+.badge-success { background: #ecfdf5; color: #047857; }
+.badge-info { background: #eff6ff; color: #1d4ed8; }
+.badge-danger { background: #fee2e2; color: #b91c1c; }
+
 .role-user { background: #dbeafe; color: #1e40af; }
 .role-admin { background: #fef3c7; color: #b45309; }
 .role-superadmin { background: #f3e8ff; color: #7c3aed; }
 
 .status-active { color: var(--success); font-weight: 600; }
 .status-inactive { color: var(--danger); font-weight: 600; }
+
+.status-pending { color: var(--warning); font-weight: 600; }
+.status-info { color: var(--info); font-weight: 600; }
+
+.status-dot {
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
 
 .action-btn {
     padding: 0.35rem 0.75rem;
@@ -278,6 +293,11 @@ body {
     color: var(--text-primary);
 }
 
+.action-select {
+    cursor: pointer;
+    border-color: #cbd5e1;
+}
+
 .btn-promote { background: #10b981; color: white; border-color: #10b981; }
 .btn-demote { background: #f59e0b; color: white; border-color: #f59e0b; }
 .btn-deactivate { background: #ef4444; color: white; border-color: #ef4444; }
@@ -288,6 +308,79 @@ body {
     color: white;
     border-color: var(--primary-color);
 }
+
+.link-button {
+    text-decoration: none;
+}
+
+.table-section--compact {
+    margin-bottom: 0;
+}
+
+.section-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: normal;
+}
+
+.leaderboard-meta {
+    display: flex;
+    align-items: center;
+}
+
+.leaderboard-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.rank-badge--1 { background: #f59e0b; color: #ffffff; }
+.rank-badge--2 { background: #94a3b8; color: #ffffff; }
+.rank-badge--3 { background: #b45309; color: #ffffff; }
+.rank-badge--default { background: #e2e8f0; color: #64748b; }
+
+.empty-state {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 1rem;
+}
+
+.table-scroll {
+    overflow-x: auto;
+}
+
+.user-name {
+    font-weight: 600;
+}
+
+.user-handle {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.self-label {
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 0 1rem;
+}
+
+.issue-title {
+    font-weight: 500;
+}
+
+.category-badge {
+    background: #f3f4f6;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.inline-form {
+    display: inline;
+}
+
+.stat-value--success { color: var(--success); }
+.stat-value--warning { color: var(--warning); }
+.stat-value--info { color: var(--info); }
 
 /* Search & Filter Section */
 .search-filter-section {

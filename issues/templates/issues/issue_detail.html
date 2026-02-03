@@ -40,8 +40,8 @@
         <span>
           {% if user == issue.reported_by %}
             You ({{ issue.anonymous_code }})
-          {% elif user.profile.is_superadmin %}
-            {{ issue.reported_by.profile.name }} ({{ issue.anonymous_code }})
+          {% elif can_admin_action %}
+            {{ issue.reported_by.username }} ({{ issue.anonymous_code }})
           {% else %}
             {{ issue.anonymous_code }}
           {% endif %}
@@ -73,7 +73,7 @@
     {% endif %}
 
     <!-- Admin Update Section -->
-    {% if user.profile.is_admin %}
+    {% if can_admin_action %}
       <div class="admin-section">
         <h4>Admin Actions</h4>
         <a href="{% url 'update_issue_status' issue.id %}" class="btn-primary">Update Status</a>
@@ -117,10 +117,8 @@
               <strong>
                 {% if user == comment.author %}
                   You
-                {% elif comment.author.profile.is_admin %}
-                  Admin
-                {% elif user.profile.is_superadmin %}
-                  {{ comment.author.profile.name }}
+                {% elif can_admin_action %}
+                  {{ comment.author.username }}
                 {% else %}
                   User
                 {% endif %}
