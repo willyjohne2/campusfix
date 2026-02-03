@@ -177,8 +177,7 @@
                     <span class="rank-badge"
                         style="background: {% if forloop.counter == 1 %}#f59e0b{% elif forloop.counter == 2 %}#94a3b8{% elif forloop.counter == 3 %}#b45309{% else %}#e2e8f0; color: #64748b{% endif %};">{{
                         forloop.counter }}</span>
-                    <span style="font-weight: 600; color: var(--text-primary);">{{ reporter.reported_by__profile__name
-                        }}</span>
+                    <span style="font-weight: 600; color: var(--text-primary);">{{ reporter.reported_by__profile__name }}</span>
                 </div>
                 <span class="role-badge" style="background: #eff6ff; color: #1d4ed8;">{{ reporter.issue_count }}
                     issues</span>
